@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Management</title>
+    <link rel="stylesheet" href="/frontend/css/admin.dashboard.css">
+</head>
+
+<body>
+    <div class="main">
+        <div class="sideBar">
+            <div class="sideBar-header">
+                <h1>Promage</h1>
+                <ion-icon name="menu-outline" class="menu-icon"></ion-icon>
+                <ion-icon name="chevron-back-circle" class="back-icon"></ion-icon>
+            </div>
+            <div class="create-items">
+                <ion-icon name="add-circle" class="icon"></ion-icon>
+                <p>Create Project</p>
+            </div>
+            <div class="links">
+                <ul>
+                    <ul>
+                        <li class="active"><ion-icon name="grid-outline" class="link-icon"></ion-icon><a href="#"
+                                data-target="dashboard">Dashboard</a></li>
+                        <li class="project-link"><ion-icon name="card-outline" class="link-icon"></ion-icon><a href="#"
+                                data-target="projects">Projects</a></li>
+                        <li><ion-icon name="people-outline" class="link-icon"></ion-icon><a href="#"
+                                data-target="users">Users</a></li>
+                        <li><ion-icon name="settings-outline" class="link-icon"></ion-icon><a href="#"
+                                data-target="settings">Settings</a></li>
+                    </ul>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+        <div class="main-content">
+
+            <div class="modal-overlay myModal" style="display: none;">
+                <!--Diaplay Modal-->
+            </div>
+            <div class="main-header">
+                <h2>Dashboard</h2>
+                <form class="searchForm">
+                    <ion-icon name="search-circle-outline" class="icon"></ion-icon>
+                    <input type="text" placeholder="Search for anything">
+                </form>
+                <div class="profile">
+                    <img src="/frontend/assests/profile.jpg" alt="profile-img" class="profileImg">
+                    <div class="profile-text">
+
+                        <p>Alex melan</p>
+
+                        <!-- drop down  -->
+
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="main-body">
+
+            </div>
+        </div>
+    </div>
+    <script src="/frontend/dist/project/project.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,74 @@
+{
+  "projects": [
+    {
+      "id": "ed2e",
+      "name": "Mobile App",
+      "description": "Using Kotl",
+      "endDate": "2024-06-28",
+      "assignedUser": "john@gmail.com"
+    },
+    {
+      "id": "012d",
+      "name": "Medassist",
+      "description": "nhh",
+      "endDate": "2024-06-21",
+      "assignedUser": "kevo@gmail.com"
+    },
+    {
+      "id": "3c42",
+      "name": "Medassist",
+      "description": "alah",
+      "endDate": "2024-06-20",
+      "assignedUser": "john@gmail.com"
+    },
+    {
+      "id": "52ad",
+      "name": "Mobile App",
+      "description": "dd",
+      "endDate": "2024-06-14",
+      "assignedUser": "john@gmail.com"
+    },
+    {
+      "id": "63b6",
+      "name": "Web App",
+      "description": "cd",
+      "endDate": "2024-06-12",
+      "assignedUser": "simp@gmail.com"
+    }
+  ],
+  "users": [
+    {
+      "id": "1",
+      "fullname": "John Doe",
+      "email": "john@gmail.com"
+    },
+    {
+      "id": "2",
+      "fullname": "Simpson Gerald",
+      "email": "simp@gmail.com"
+    },
+    {
+      "id": "3",
+      "fullname": "Alex Mellan",
+      "email": "alex@gmail.com"
+    },
+    {
+      "id": "4",
+      "fullname": "Kelvin Mellan",
+      "email": "kevo@gmail.com"
+    },
+    {
+      "id": "5",
+      "fullname": "Sam Mellan",
+      "email": "sam@gmail.com"
+    }
+  ],
+  "Assignment": [
+    {
+      "projectId": "1",
+      "projectName": "Java",
+      "username": "John Doe",
+      "id": "43c3"
+    }
+  ]
+}
