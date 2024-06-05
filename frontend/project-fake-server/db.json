@@ -1,0 +1,46 @@
+{
+  "projects": [
+    {
+      "id": "e190",
+      "name": "Web App",
+      "description": "bvvgg",
+      "endDate": "2024-06-19",
+      "assignedUser": "simp@gmail.com"
+    }
+  ],
+  "users": [
+    {
+      "id": "1",
+      "fullname": "John Doe",
+      "email": "john@gmail.com"
+    },
+    {
+      "id": "2",
+      "fullname": "Simpson Gerald",
+      "email": "simp@gmail.com"
+    },
+    {
+      "id": "3",
+      "fullname": "Alex Mellan",
+      "email": "alex@gmail.com"
+    },
+    {
+      "id": "4",
+      "fullname": "Kelvin Mellan",
+      "email": "kevo@gmail.com"
+    },
+    {
+      "id": "5",
+      "fullname": "Sam Mellan",
+      "email": "sam@gmail.com"
+    }
+  ],
+  "Assignment": [
+    {
+      "projectId": "1",
+      "projectName": "Java",
+      "username": "John Doe",
+      "id": "43c3"
+    }
+  ]
+}

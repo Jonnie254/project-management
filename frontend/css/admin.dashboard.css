@@ -53,7 +53,7 @@ body {
 .back-icon {
   cursor: pointer;
   color: blueviolet;
-  font-size: 40px;
+
 }
 .menu-icon {
   display: none;
@@ -62,7 +62,7 @@ body {
   font-size: 50px;
 }
 .link-icon {
-  font-size: 30px;
+  font-size: 10px;
 }
 .icon,
 .link-icon,
@@ -76,7 +76,7 @@ body {
   display: none;
 }
 .card-icon {
-  font-size: 50px;
+  font-size: 40px;
 }
 .link-icon {
   font-size: 30px;
@@ -91,13 +91,13 @@ body {
 .links ul li {
   border-radius: 10px;
   padding: 5px 10px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
   list-style: none;
   margin-bottom: 50px;
 }
 .links ul li a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   text-decoration: none;
   color: #fff;
 }
@@ -162,8 +162,8 @@ select:focus {
 }
 .main-body {
   margin: 30px auto;
-  width: 90%;
-  overflow-x: auto;
+  width: 80%;
+  
 }
 .cards {
   display: grid;
@@ -251,7 +251,7 @@ label {
 .submitbtn:hover {
   background-color: rgb(129, 1, 249);
 }
-.projectTable {
+.displayTable {
   font-family: arial, sans-serif;
   border-collapse: collapse;
   width: 100%;
@@ -300,7 +300,5 @@ th {
   .menu-icon {
     display: block;
   }
-  ul li a {
-    display: none;
-  }
+  
 }

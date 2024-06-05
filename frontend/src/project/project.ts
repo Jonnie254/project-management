@@ -317,7 +317,7 @@ const handleFormSubmission = async (id?: string) => {
         successMessage.style.display = "block";
         successMessage.textContent = "project updated successfully";
       } else {
-        //await addProject(projectData);
+        await addProject(projectData);
         successMessage.style.display = "block";
         successMessage.textContent = "project created successfully";
       }
@@ -325,7 +325,11 @@ const handleFormSubmission = async (id?: string) => {
       // Reset form
       const form = document.querySelector(".projectForm") as HTMLFormElement;
       form.reset();
-      renderProjects();
+      setTimeout(() => {
+        modalOverlay.style.display = "none";
+        renderProjects();
+      }, 1000);
+  
       populateUsersDropdown(); // Refresh user dropdown to reflect assignment
     } catch (error) {
       console.error("Error handling project:", error);
@@ -333,12 +337,40 @@ const handleFormSubmission = async (id?: string) => {
   }
 };
 
+// Render the dashboard section
+const renderDashboard = () => {
+  mainBody.innerHTML = `
+  
+  <div class="cards">
+    <div class="card">
+      <ion-icon name="card-outline" class="card-icon"></ion-icon>
+      <p>Projects</p>
+      <h2>${projects.length}</h2>
+    </div>
+    <div class="card">
+      <ion-icon name="people-outline" class="card-icon"></ion-icon>
+      <p>Users</p>
+      <h2>${users.length}</h2>
+    </div>
+    <div class="card">
+      <ion-icon name="timer-outline" class="card-icon"></ion-icon>
+      <p>Time Spent</p>
+      <h2>20HRS</h2>
+    
+  </div>
+  <div class="analysis">
+  </div>
+  </div>
+  
+  `;
+};
+
 // Render the projects section
 const renderProjects = async () => {
   projects = await fetchProjects();
   mainBody.innerHTML = "";
   const table = document.createElement("table");
-  table.className = "projectTable";
+  table.className = "displayTable";
 
   const headerRow = document.createElement("tr");
   ["Name", "Description", "User", "EndDate", "Actions"].forEach((header) => {
@@ -360,9 +392,7 @@ const renderProjects = async () => {
     <td>${project.endDate}</td>
     <td>
       <div class="actions">
-       
         <ion-icon name="create-outline" class="editBtn" data-id="${project.id}"></ion-icon>
-      
         <ion-icon name="trash-outline" class="deleteBtn" data-id="${project.id}"></ion-icon>
       </div>
     </td>
@@ -408,34 +438,42 @@ const renderProjects = async () => {
   });
 };
 
-// Render the dashboard section
-const renderDashboard = () => {
-  mainBody.innerHTML = `<div class="cards">
-    <div class="card">
-      <ion-icon name="card-outline" class="card-icon"></ion-icon>
-      <p>Projects</p>
-      <h2>${projects.length}</h2>
-    </div>
-    <div class="card">
-      <ion-icon name="people-outline" class="card-icon"></ion-icon>
-      <p>Users</p>
-      <h2>${users.length}</h2>
-    </div>
-    <div class="card">
-      <ion-icon name="timer-outline" class="card-icon"></ion-icon>
-      <p>Time Spent</p>
-      <h2>20HRS</h2>
-    </div>
-  </div>`;
-};
+
 
 // Render the users section
-const renderUsers = () => {
-  mainBody.innerHTML = "<h1>Users</h1>";
+const renderUsers = async () => {
+
+  users = await fetchUsers();
+
+  mainBody.innerHTML = " ";
+  const table = document.createElement('table') as HTMLTableElement;
+  table.className = 'displayTable';
+
+  const headerRow = document.createElement("tr");
+  ["Name", "Email",].forEach((header) => {
+    const th = document.createElement("th");
+    th.textContent = header;
+    headerRow.appendChild(th);
+  });
+
+  table.appendChild(headerRow);
+  users.forEach(user=>{
+    const row = document.createElement("tr") as HTMLTableRowElement;
+   row.innerHTML=`
+   
+   <td>${user.fullname}</td>
+    <td>${user.email}</td>
+
+   `
+ table.appendChild(row)
+
+  })
 };
 
 // Render the settings section
 const renderSettings = () => {
+
+
   mainBody.innerHTML =
     "<h1>Settings Section</h1> <p>This is the Settings section.</p>";
 };
@@ -472,4 +510,4 @@ links.forEach((link) => {
 });
 
 // Set default content to Dashboard on page load
-//renderDashboard();
+renderDashboard();
