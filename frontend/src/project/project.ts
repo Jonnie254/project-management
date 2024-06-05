@@ -478,6 +478,8 @@ const renderUsers = async () => {
   users = await fetchUsers();
 
   mainBody.innerHTML = " ";
+
+  
   const table = document.createElement('table') as HTMLTableElement;
   table.className = 'displayTable';
 
@@ -497,9 +499,10 @@ const renderUsers = async () => {
     <td>${user.email}</td>
 
    `
- table.appendChild(row)
+ table.appendChild(row);
 
   })
+  mainBody.appendChild(table)
 };
 
 // Render the settings section
@@ -531,9 +534,7 @@ links.forEach((link) => {
       case "users":
         renderUsers();
         break;
-      case "settings":
-        renderSettings();
-        break;
+
       default:
         renderDashboard();
         break;
