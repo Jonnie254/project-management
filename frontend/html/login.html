@@ -4,9 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link stylesheet rel="stylesheet" href="/frontend/css/index.css">
+    <link rel="stylesheet" href="/frontend/css/index.css">
     <title>Login Form</title>
 </head>
+.
 
 <body>
     <div class="container">
@@ -20,12 +21,12 @@
                 <form id="form-id">
                     <label for="email">Email</label>
                     <input type="email" id="email-login" name="email" placeholder="Enter your email">
-                    <div class="error-message">
+                    <div id="email-error" class="error-message" style="display: none;">
                         <p>Email is required</p>
                     </div>
                     <label for="password">Password</label>
                     <input type="password" id="password-login" name="password" placeholder="Enter your password">
-                    <div class="error-message">
+                    <div id="password-error" class="error-message" style="display: none;">
                         <p>Password is required</p>
                     </div>
                     <button type="submit" class="login-btn" id="login-btn">Login</button>
@@ -37,6 +38,7 @@
             </div>
         </div>
     </div>
+    <script src="/frontend/dist/users/users1.js"></script>
 </body>
 
 </html>
