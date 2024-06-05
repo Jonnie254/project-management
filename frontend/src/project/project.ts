@@ -83,6 +83,37 @@ const deleteProject = async (id: string) => {
   renderProjects();
 };
 
+// Show confirmation modal
+const showDeleteConfirmation = (projectId: string) => {
+  modalOverlay.innerHTML = `
+    <div class="modal-content">
+    <div class="modalItems">
+      <p>Are you sure you want to delete this project?</p>
+      <button id="confirmDelete">Yes</button>
+      <button id="cancelDelete">No</button>
+      </div>
+    </div>
+  `;
+  modalOverlay.style.display = "block";
+
+  const confirmDeleteBtn = document.querySelector("#confirmDelete") as HTMLButtonElement;
+  const cancelDeleteBtn = document.querySelector("#cancelDelete") as HTMLButtonElement;
+
+  confirmDeleteBtn.addEventListener("click", async () => {
+    try {
+      await deleteProject(projectId);
+      modalOverlay.style.display = "none";
+    } catch (error) {
+      console.error("Error deleting project:", error);
+    }
+  });
+
+  cancelDeleteBtn.addEventListener("click", () => {
+    modalOverlay.style.display = "none";
+  });
+};
+
+
 // Update project
 const updateProject = async (
   id: string,
@@ -427,9 +458,10 @@ const renderProjects = async () => {
       const id = deleteButton.dataset.id;
       if (id) {
         try {
-          await deleteProject(id);
+          showDeleteConfirmation(id);
+          // await deleteProject(id);
           // Render projects after deletion
-          renderProjects();
+          // renderProjects();
         } catch (error) {
           console.error("Error deleting project:", error);
         }

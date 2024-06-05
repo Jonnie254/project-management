@@ -14,7 +14,7 @@ body {
   background: linear-gradient();
 }
 .sideBar {
-  width: 25vw;
+  width: 30vw;
   height: 100vh;
   background-color: #1d1d1d;
   display: flex;
@@ -30,6 +30,7 @@ body {
   justify-content: space-around;
 }
 .sideBar-header h1 {
+  padding-top: 15px;
   font-size: 35px;
   color: antiquewhite;
 }
@@ -40,8 +41,8 @@ body {
 .create-items {
   cursor: pointer;
   background-color: rgb(241, 234, 226);
-  padding: 5px;
-  margin: 50px 0px;
+  padding: 2px;
+  margin: 40px 0px;
   border-radius: 20px;
   display: flex;
   gap: 2px;
@@ -92,7 +93,7 @@ body {
   border-radius: 10px;
   padding: 5px 10px;
   list-style: none;
-  margin-bottom: 50px;
+  margin-bottom: 40px;
 }
 .links ul li a {
   display: flex;
@@ -202,6 +203,7 @@ select:focus {
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 10; /* Ensure it's above the overlay */
+  font-size: 18px;
   max-width: 90%;
 }
 
@@ -261,6 +263,19 @@ label {
   font-family: arial, sans-serif;
   border-collapse: collapse;
   border-radius: 10px;
+}
+#confirmDelete,#cancelDelete{
+background-color: slateblue;
+color: #fff;
+padding:.5rem 2rem;
+cursor: pointer;
+border: none;
+border-radius: 10px;
+margin-top: 20px;
+}
+#cancelDelete{
+  background-color:rgb(219, 1, 1);
+ 
 }
 th {
   background-color: #222121;
