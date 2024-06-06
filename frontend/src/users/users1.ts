@@ -30,7 +30,6 @@ function displayError(
 }
 
 interface User {
-  user_id: string;
   fname: string;
   email: string;
   password: string;
@@ -95,7 +94,7 @@ if (formRegister) {
     }
 
     // Register user
-    const response = await fetch("http://localhost:3002/users", {
+    const response = await fetch("http://localhost:3002/auth/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
