@@ -1,5 +1,6 @@
 import express, { NextFunction, Request, Response, json } from "express";
 import dotenv from "dotenv";
+import cors from "cors";
 import authRouter from "./router/auth.router";
 import projectRouter from "./router/project.router";
 import userRouter from "./router/user.router";
@@ -7,6 +8,7 @@ import userRouter from "./router/user.router";
 dotenv.config();
 const app = express();
 app.use(json());
+app.use(cors());
 
 app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
   if (error) {
