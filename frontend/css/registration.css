@@ -48,7 +48,7 @@ form input {
 }
 button {
   padding: 10px 30px;
-  background-color: #0077b6;
+  background-color: slateblue;
   color: #ffffff;
   border: none;
   border-radius: 5px;
@@ -56,6 +56,10 @@ button {
   outline: none;
   width: 250px;
   margin: 0 auto;
+  font-size: 16px;
+}
+button:hover {
+  background-color: #5d3fd3;
 }
 form input:focus {
   border: 2px solid #0077b6;
