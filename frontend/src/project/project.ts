@@ -33,14 +33,14 @@ const endDateInput = document.querySelector(
 // Create a project
 const addProject = async (newProject: Project) => {
   try {
-    const response = await fetch("http://localhost:3000/projects", {
+    const response = await fetch("http://localhost:3002/projects/create", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(newProject),
     });
-
+    const result = await response.json();
     if (response.ok) {
       const project = await response.json();
       projects.push(project);
@@ -55,21 +55,21 @@ const addProject = async (newProject: Project) => {
 
 // Fetch users from the server
 const fetchUsers = async () => {
-  const response = await fetch("http://localhost:3000/users");
+  const response = await fetch("http://localhost:3002/users/all");
   const data = await response.json();
   return data;
 };
 
 // Fetch projects from the server
 const fetchProjects = async () => {
-  const response = await fetch("http://localhost:3000/projects");
+  const response = await fetch("http://localhost:3002/projects");
   const data = await response.json();
   return data;
 };
 
 // Delete project
 const deleteProject = async (id: string) => {
-  const response = await fetch(`http://localhost:3000/projects/${id}`, {
+  const response = await fetch(`http://localhost:3002/projects/${id}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -88,7 +88,7 @@ const updateProject = async (
   id: string,
   updatedFields: Partial<Project>
 ): Promise<void> => {
-  const response = await fetch(`http://localhost:3000/projects/${id}`, {
+  const response = await fetch(`http://localhost:3002/projects/${id}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -117,7 +117,8 @@ const populateUsersDropdown = async () => {
     let assignUserInput = document.querySelector(
       "#assignUser"
     ) as HTMLSelectElement;
-    users = await fetchUsers();
+    let users = [{ id: 1, fullname: "John Doe", email: "TEST" }];
+    // users = await fetchUsers();
 
     assignUserInput.innerHTML = ""; // Clear existing options
     users.forEach((user) => {
@@ -129,9 +130,7 @@ const populateUsersDropdown = async () => {
       }
       assignUserInput.appendChild(option);
     });
-  } catch (error) {
-    console.log("Error fetching users:", error);
-  }
+  } catch (error) {}
 };
 
 // Render the project form modal
@@ -236,6 +235,12 @@ const renderProjectFormModal = (project?: Project) => {
   projectForm.addEventListener("submit", (event: Event) => {
     event.preventDefault();
     handleFormSubmission(project?.id);
+    // return;
+    // if (project) {
+    //   handleFormSubmission(project.id);
+    // } else {
+    //   handleFormSubmission();
+    // }
   });
 
   modalOverlay.style.display = "block";
@@ -312,21 +317,23 @@ const handleFormSubmission = async (id?: string) => {
     };
 
     try {
+      let response: any;
       if (id) {
-        await updateProject(id, projectData);
-        successMessage.style.display = "block";
-        successMessage.textContent = "project updated successfully";
+        response = await updateProject(id, projectData);
       } else {
-        //await addProject(projectData);
-        successMessage.style.display = "block";
-        successMessage.textContent = "project created successfully";
+        response = await addProject(projectData);
       }
 
-      // Reset form
-      const form = document.querySelector(".projectForm") as HTMLFormElement;
-      form.reset();
-      renderProjects();
-      populateUsersDropdown(); // Refresh user dropdown to reflect assignment
+      if (response.success) {
+        successMessage.style.display = "block";
+        successMessage.textContent = "project created successfully";
+
+        // Reset form
+        const form = document.querySelector(".projectForm") as HTMLFormElement;
+        form.reset();
+        renderProjects();
+        populateUsersDropdown(); // Refresh user dropdown to reflect assignment
+      }
     } catch (error) {
       console.error("Error handling project:", error);
     }

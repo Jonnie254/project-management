@@ -1,0 +1,12 @@
+GET http://localhost:3002/projects/all
+Content-Type: application/json
+
+### Create a project
+POST http://localhost:3002/projects/create
+Content-Type: application/json
+
+{
+    "name":"Melissa Doe",
+    "description":"melissa90@gmail.com",
+    "end_date":"2024-06-06"
+}
