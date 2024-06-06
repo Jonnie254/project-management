@@ -19,7 +19,7 @@ export class authorization {
         .execute("logins")
     ).recordset;
 
-    if (UserActivation.length < 1) {
+    if (user.length < 1) {
       return {
         success: false,
         message: "User doesn't exist",
