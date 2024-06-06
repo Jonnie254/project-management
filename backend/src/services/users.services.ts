@@ -10,7 +10,7 @@ export class UserService {
     let pool = await mssql.connect(sqlConfig);
 
     let User_id = v4();
-    let hashedpassword = bcrypt.hashSync(users.password, 6);
+    let hashedpassword = bcrypt.hashSync(users.password as string, 6);
 
     if (pool.connected) {
       let Emailexists = (await pool.request().execute("checkEmail")).recordset;

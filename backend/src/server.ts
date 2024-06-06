@@ -19,7 +19,7 @@ app.use("/auth", authRouter);
 app.use("/projects", projectRouter);
 app.use("/users", userRouter);
 
-const port = 3000;
+const port = 3002;
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
