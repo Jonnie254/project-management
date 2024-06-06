@@ -23,11 +23,11 @@ function displayError(
   message: string = ""
 ): void {
   const element = document.getElementById(elementId) as HTMLDivElement;
-  element.style.display = show ? "block" : "none";
-  if (message) element.textContent = message;
+  if (element) {
+    element.style.display = show ? "block" : "none";
+    if (message) element.textContent = message;
+  }
 }
-
-// Your other TypeScript code goes here (e.g., form event listeners, API calls)
 
 interface User {
   user_id: string;
@@ -35,12 +35,14 @@ interface User {
   email: string;
   password: string;
 }
+
 const popUp = document.getElementById("pop-up") as HTMLDivElement;
 
 const formRegister = document.getElementById(
   "form-register"
 ) as HTMLFormElement;
-const formLogin = document.getElementById("form-login") as HTMLFormElement;
+const formLogin = document.getElementById("form-id") as HTMLFormElement;
+
 const openPopUp = () => {
   popUp.classList.add("show");
   setTimeout(() => {
@@ -56,10 +58,10 @@ if (formRegister) {
       document.getElementById("name-register") as HTMLInputElement
     ).value;
     const emailRegister = (
-      document.getElementById("email-login") as HTMLInputElement
+      document.getElementById("email-register") as HTMLInputElement
     ).value;
     const passwordRegister = (
-      document.getElementById("password-login") as HTMLInputElement
+      document.getElementById("password-register") as HTMLInputElement
     ).value;
     const confirmPassword = (
       document.getElementById("confirm-password") as HTMLInputElement
@@ -93,7 +95,7 @@ if (formRegister) {
     }
 
     // Register user
-    const response = await fetch("http://localhost:3001/users", {
+    const response = await fetch("http://localhost:3002/users", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -108,13 +110,14 @@ if (formRegister) {
 
     if (response.ok) {
       openPopUp();
-      // formRegister.reset();
+      formRegister.reset();
     } else {
       const result = await response.json();
       alert("Error: " + result.message);
     }
   });
 }
+
 if (formLogin) {
   formLogin.addEventListener("submit", async function (event: Event) {
     event.preventDefault();

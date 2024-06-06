@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link stylesheet rel="stylesheet" href="/frontend/css/registration.css">
+    <link rel="stylesheet" href="/frontend/css/registration.css">
     <title>Registration Form</title>
 </head>
 
@@ -17,26 +17,26 @@
             </div>
             <div class="container-form">
                 <h1>Register</h1>
-                <form id="form-id">
-                    <label for="name">Name</label>
-                    <input type="text" id="name" name="name" placeholder="Enter your name">
-                    <div class="error-message">
+                <form id="form-register">
+                    <label for="name-register">Name</label>
+                    <input type="text" id="name-register" name="name" placeholder="Enter your name">
+                    <div id="name-error" class="error-message" style="display: none;">
                         <p>Name is required</p>
                     </div>
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" placeholder="Enter your email">
-                    <div class="error-message">
+                    <label for="email-register">Email</label>
+                    <input type="email" id="email-register" name="email" placeholder="Enter your email">
+                    <div id="email-error" class="error-message" style="display: none;">
                         <p>Email is required</p>
                     </div>
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="Enter your password">
-                    <div class="error-message">
+                    <label for="password-register">Password</label>
+                    <input type="password" id="password-register" name="password" placeholder="Enter your password">
+                    <div id="password-error" class="error-message" style="display: none;">
                         <p>Password is required</p>
                     </div>
                     <label for="confirm-password">Confirm Password</label>
                     <input type="password" id="confirm-password" name="confirm-password"
                         placeholder="Confirm your password">
-                    <div class="error-message">
+                    <div id="confirm-password-error" class="error-message" style="display: none;">
                         <p>Passwords do not match</p>
                     </div>
                     <button type="submit" class="register-btn" id="register-btn">Register</button>
@@ -45,6 +45,7 @@
             </div>
         </div>
     </div>
+    <script src="/frontend/dist/users/users1.js"></script>
 </body>
 
 </html>
