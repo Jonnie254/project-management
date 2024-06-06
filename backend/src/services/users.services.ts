@@ -7,67 +7,84 @@ import { sqlConfig } from "../config/sqlconfig";
 
 export class UserService {
   async RegisterUser(users: User) {
-    let pool = await mssql.connect(sqlConfig);
+    try {
+      let pool = await mssql.connect(sqlConfig);
 
-    let User_id = v4();
-    let hashedpassword = bcrypt.hashSync(users.password as string, 6);
+      let User_id = v4();
+      let hashedpassword = bcrypt.hashSync(users.password as string, 6);
 
-    if (pool.connected) {
-      let Emailexists = (await pool.request().execute("checkEmail")).recordset;
+      if (pool.connected) {
+        let Emailexists = (await pool.request().execute("checkEmail"))
+          .recordset;
 
-      if (!lodash.isEmpty(Emailexists)) {
-        return {
-          success: false,
-          message: "Email is in use",
-          data: null,
-        };
-      }
-      let results = (
-        await pool
-          .request()
-          .input("id", mssql.VarChar, User_id)
-          .input("name", users.name)
-          .input("email", users.email)
-          .input("password", hashedpassword)
-          .execute("RegisterUser")
-      ).rowsAffected;
+        if (!lodash.isEmpty(Emailexists)) {
+          return {
+            success: false,
+            message: "Email is in use",
+            data: null,
+          };
+        }
+        let results = (
+          await pool
+            .request()
+            .input("id", mssql.VarChar, User_id)
+            .input("name", users.name)
+            .input("email", users.email)
+            .input("password", hashedpassword)
+            .execute("RegisterUser")
+        ).rowsAffected;
 
-      if ((results[0] = 1)) {
-        return {
-          success: true,
-          message: "Account successfully created",
-          data: null,
-        };
+        if ((results[0] = 1)) {
+          return {
+            success: true,
+            message: "Account successfully created",
+            data: null,
+          };
+        } else {
+          return {
+            success: false,
+            message: "Failed to create account",
+            data: null,
+          };
+        }
       } else {
         return {
           success: false,
-          message: "Failed to create account",
+          message: "Unable to Connect",
           data: null,
         };
       }
-    } else {
+    } catch (error) {
       return {
         success: false,
-        message: "Unable to Connect",
+        message: "An error occurred",
         data: null,
       };
     }
   }
   async FetchAllUsers() {
-    let pool = await mssql.connect(sqlConfig);
-    let results = (await pool.request().execute("fetchAllUsers")).recordset;
+    try {
+      let pool = await mssql.connect(sqlConfig);
+      let results = (await pool.request().execute("fetchAllUsers")).recordset;
 
-    if (results.length == 0) {
+      if (results.length == 0) {
+        return {
+          success: true,
+          message: "No users are registered",
+          data: null,
+        };
+      } else {
+        return {
+          success: true,
+          message: "users found",
+          data: results,
+        };
+      }
+    } catch (error) {
       return {
-        success: true,
-        message: "No users are registered",
+        success: false,
+        message: "An error occurred",
         data: null,
-      };
-    } else {
-      return {
-        success: true,
-        message: "users found",
-        data: results,
       };
     }
   }
