@@ -1,3 +1,4 @@
+import { Request, Response } from "express";
 import { User } from "../interfaces/users";
 import { authorization } from "../services/authorization";
 import { UserService } from "../services/users.services";
@@ -28,6 +29,6 @@ export const login = async (req: Request, res: Response) => {
   } else {
     return res
       .status(200)
-      .json({ success: true, message: login.message, data: login.token });
+      .json({ success: true, message: login.message, data: login.data });
   }
 };

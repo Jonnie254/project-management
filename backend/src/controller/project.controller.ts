@@ -1,3 +1,4 @@
+import { Request, Response } from "express";
 import { Projects } from "../interfaces/projects";
 import { projectServices } from "../services/projects.services";
 
