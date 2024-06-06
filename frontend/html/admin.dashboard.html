@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Management</title>
-    <link rel="stylesheet" href="/frontend/css/admin.dashboard.css">
+    <link rel="stylesheet" href="/project-management/frontend/css/admin.dashboard.css">
 </head>
 
 <body>
@@ -23,14 +23,13 @@
             <div class="links">
                 <ul>
                     <ul>
-                        <li class="active"><ion-icon name="grid-outline" class="link-icon"></ion-icon><a href="#"
-                                data-target="dashboard">Dashboard</a></li>
-                        <li class="project-link"><ion-icon name="card-outline" class="link-icon"></ion-icon><a href="#"
-                                data-target="projects">Projects</a></li>
-                        <li><ion-icon name="people-outline" class="link-icon"></ion-icon><a href="#"
-                                data-target="users">Users</a></li>
-                        <li><ion-icon name="settings-outline" class="link-icon"></ion-icon><a href="#"
-                                data-target="settings">Settings</a></li>
+                        <li class="active"><a href="#"
+                                data-target="dashboard"><ion-icon name="grid-outline" class="link-icon"></ion-icon>Dashboard</a></li>
+                        <li class="project-link"><a href="#"
+                                data-target="projects"><ion-icon name="card-outline" class="link-icon"></ion-icon>Projects</a></li>
+                        <li><a href="#"
+                                data-target="users"><ion-icon name="people-outline" class="link-icon"></ion-icon>Users</a></li>
+                        <li><a href="login.html"><ion-icon name="log-out-outline" class="link-icon"></ion-icon>Logout</a></li>
                     </ul>
 
                 </ul>
@@ -50,16 +49,19 @@
                     <ion-icon name="search-circle-outline" class="icon"></ion-icon>
                     <input type="text" placeholder="Search for anything">
                 </form>
-                <div class="profile">
-                    <img src="/frontend/assests/profile.jpg" alt="profile-img" class="profileImg">
-                    <div class="profile-text">
 
-                        <p>Alex melan</p>
+                <div class="user-profile">
+                    <img src="/project-management/frontend/assests/profile.jpg" alt="User Profile" class="profile-pic">
+                    <div class="dropdown">
+                      <button class="dropdown-btn">Alex Melan ▼</button>
+                      <div class="dropdown-content">
+                        <a href="#profile">View Profile</a>
 
-                        <!-- drop down  -->
-
+                        <a href="login.html">Logout</a>
+                      </div>
                     </div>
-                </div>
+                  </div>
+             
             </div>
 
 
@@ -68,7 +70,7 @@
             </div>
         </div>
     </div>
-    <script src="/frontend/dist/project/project.js"></script>
+    <script src="/project-management//frontend/dist/project/project.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>

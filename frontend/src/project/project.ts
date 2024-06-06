@@ -83,6 +83,40 @@ const deleteProject = async (id: string) => {
   renderProjects();
 };
 
+// Show confirmation modal
+const showDeleteConfirmation = (projectId: string) => {
+  modalOverlay.innerHTML = `
+    <div class="modal-content">
+    <div class="modalItems">
+      <p>Are you sure you want to delete this project?</p>
+      <button id="confirmDelete">Yes</button>
+      <button id="cancelDelete">No</button>
+      </div>
+    </div>
+  `;
+  modalOverlay.style.display = "block";
+
+  const confirmDeleteBtn = document.querySelector(
+    "#confirmDelete"
+  ) as HTMLButtonElement;
+  const cancelDeleteBtn = document.querySelector(
+    "#cancelDelete"
+  ) as HTMLButtonElement;
+
+  confirmDeleteBtn.addEventListener("click", async () => {
+    try {
+      await deleteProject(projectId);
+      modalOverlay.style.display = "none";
+    } catch (error) {
+      console.error("Error deleting project:", error);
+    }
+  });
+
+  cancelDeleteBtn.addEventListener("click", () => {
+    modalOverlay.style.display = "none";
+  });
+};
+
 // Update project
 const updateProject = async (
   id: string,
@@ -340,12 +374,40 @@ const handleFormSubmission = async (id?: string) => {
   }
 };
 
+// Render the dashboard section
+const renderDashboard = () => {
+  mainBody.innerHTML = `
+  
+  <div class="cards">
+    <div class="card">
+      <ion-icon name="card-outline" class="card-icon"></ion-icon>
+      <p>Projects</p>
+      <h2>${projects.length}</h2>
+    </div>
+    <div class="card">
+      <ion-icon name="people-outline" class="card-icon"></ion-icon>
+      <p>Users</p>
+      <h2>${users.length}</h2>
+    </div>
+    <div class="card">
+      <ion-icon name="timer-outline" class="card-icon"></ion-icon>
+      <p>Time Spent</p>
+      <h2>20HRS</h2>
+    
+  </div>
+  <div class="analysis">
+  </div>
+  </div>
+  
+  `;
+};
+
 // Render the projects section
 const renderProjects = async () => {
   projects = await fetchProjects();
   mainBody.innerHTML = "";
   const table = document.createElement("table");
-  table.className = "projectTable";
+  table.className = "displayTable";
 
   const headerRow = document.createElement("tr");
   ["Name", "Description", "User", "EndDate", "Actions"].forEach((header) => {
@@ -367,9 +429,7 @@ const renderProjects = async () => {
     <td>${project.endDate}</td>
     <td>
       <div class="actions">
-       
         <ion-icon name="create-outline" class="editBtn" data-id="${project.id}"></ion-icon>
-      
         <ion-icon name="trash-outline" class="deleteBtn" data-id="${project.id}"></ion-icon>
       </div>
     </td>
@@ -404,9 +464,10 @@ const renderProjects = async () => {
       const id = deleteButton.dataset.id;
       if (id) {
         try {
-          await deleteProject(id);
+          showDeleteConfirmation(id);
+          // await deleteProject(id);
           // Render projects after deletion
-          renderProjects();
+          // renderProjects();
         } catch (error) {
           console.error("Error deleting project:", error);
         }
@@ -415,30 +476,34 @@ const renderProjects = async () => {
   });
 };
 
-// Render the dashboard section
-const renderDashboard = () => {
-  mainBody.innerHTML = `<div class="cards">
-    <div class="card">
-      <ion-icon name="card-outline" class="card-icon"></ion-icon>
-      <p>Projects</p>
-      <h2>${projects.length}</h2>
-    </div>
-    <div class="card">
-      <ion-icon name="people-outline" class="card-icon"></ion-icon>
-      <p>Users</p>
-      <h2>${users.length}</h2>
-    </div>
-    <div class="card">
-      <ion-icon name="timer-outline" class="card-icon"></ion-icon>
-      <p>Time Spent</p>
-      <h2>20HRS</h2>
-    </div>
-  </div>`;
-};
-
 // Render the users section
-const renderUsers = () => {
-  mainBody.innerHTML = "<h1>Users</h1>";
+const renderUsers = async () => {
+  users = await fetchUsers();
+
+  mainBody.innerHTML = " ";
+
+  const table = document.createElement("table") as HTMLTableElement;
+  table.className = "displayTable";
+
+  const headerRow = document.createElement("tr");
+  ["Name", "Email"].forEach((header) => {
+    const th = document.createElement("th");
+    th.textContent = header;
+    headerRow.appendChild(th);
+  });
+
+  table.appendChild(headerRow);
+  users.forEach((user) => {
+    const row = document.createElement("tr") as HTMLTableRowElement;
+    row.innerHTML = `
+   
+   <td>${user.fullname}</td>
+    <td>${user.email}</td>
+
+   `;
+    table.appendChild(row);
+  });
+  mainBody.appendChild(table);
 };
 
 // Render the settings section
@@ -468,9 +533,7 @@ links.forEach((link) => {
       case "users":
         renderUsers();
         break;
-      case "settings":
-        renderSettings();
-        break;
+
       default:
         renderDashboard();
         break;
@@ -479,4 +542,4 @@ links.forEach((link) => {
 });
 
 // Set default content to Dashboard on page load
-//renderDashboard();
+renderDashboard();
