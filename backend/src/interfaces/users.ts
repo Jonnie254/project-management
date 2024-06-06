@@ -1,12 +1,12 @@
-export interface User{
-    id:string,
-    name:string,
-    email:string,
-    password:string,
-    role:string
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  password: string;
+  role: string;
 }
 
-export interface login_dets{
-    email:string,
-    password:string
+export interface user_login {
+  email: string;
+  password: string;
 }
