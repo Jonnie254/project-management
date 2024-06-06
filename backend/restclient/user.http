@@ -1,2 +1,2 @@
-GET http://localhost:5000/users/all
+GET http://localhost:3002/users/all
 Content-Type: application/json

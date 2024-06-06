@@ -4,19 +4,19 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
 dotenv.config();
-import { user_login } from "../interfaces/users";
 import { sqlConfig } from "../config/sqlconfig";
+import { User, user_login } from "../interfaces/users";
 
-export class authorization {
-  async Login(Login: user_login) {
+export class Authorization {
+  async login(login: user_login) {
     try {
       let pool = await mssql.connect(sqlConfig);
 
       let user = (
         await pool
           .request()
-          .input("email", Login.email)
-          .input("password", Login.password)
+          .input("email", login.email)
+          .input("password", login.password)
           .execute("logins")
       ).recordset;
 
@@ -29,7 +29,7 @@ export class authorization {
       } else {
         let hashedpassword = user[0].password;
 
-        let PasswordMatch = bcrypt.compareSync(Login.password, hashedpassword);
+        let PasswordMatch = bcrypt.compareSync(login.password, hashedpassword);
 
         if (PasswordMatch) {
           let { name, password, ...rest } = user[0];
@@ -56,6 +56,59 @@ export class authorization {
         message: "An error occurred",
         data: null,
       };
+    }
+  }
+
+  async RegisterUser(user: User) {
+    try {
+      let pool = await mssql.connect(sqlConfig);
+      let hashedpassword = bcrypt.hashSync(user.password as string, 6);
+
+      if (pool.connected) {
+        let results = (
+          await pool
+            .request()
+            .input("id", user.id)
+            .input("name", user.name)
+            .input("email", user.email)
+            .input("password", hashedpassword)
+            .execute("RegisterUser")
+        ).rowsAffected;
+
+        if ((results[0] = 1)) {
+          return {
+            success: true,
+            message: "Account successfully created",
+            data: null,
+          };
+        } else {
+          return {
+            success: false,
+            message: "Failed to create account",
+            data: null,
+          };
+        }
+      } else {
+        return {
+          success: false,
+          message: "Unable to Connect",
+          data: null,
+        };
+      }
+    } catch (error: any) {
+      if (error.message.includes("Violation of UNIQUE KEY constraint")) {
+        return {
+          success: false,
+          message: "Email is in use",
+          data: null,
+        };
+      } else {
+        return {
+          success: false,
+          message: "An error occurred",
+          data: null,
+        };
+      }
     }
   }
 }

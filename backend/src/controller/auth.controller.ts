@@ -1,11 +1,12 @@
 import { Request, Response } from "express";
 import { User, user_login } from "../interfaces/users";
-import { authorization } from "../services/authorization";
-import { UserService } from "../services/users.services";
+import { Authorization } from "../services/authorization";
+import { v4 } from "uuid";
 
 export const register = async (req: Request, res: Response) => {
   let user: User = req.body;
-  const auth = new UserService();
+  user.id = v4();
+  const auth = new Authorization();
   const register = await auth.RegisterUser(user);
   if (register.success) {
     return res
@@ -19,9 +20,9 @@ export const register = async (req: Request, res: Response) => {
 };
 
 export const login = async (req: Request, res: Response) => {
-  const auth = new authorization();
+  const auth = new Authorization();
   const login_details: user_login = req.body;
-  const login = await auth.Login(login_details);
+  const login = await auth.login(login_details);
   if (!login.success) {
     return res
       .status(401)
