@@ -1,7 +1,6 @@
 import mssql from "mssql";
-import lodash, { result } from "lodash";
+import lodash from "lodash";
 import { Projects } from "../interfaces/projects";
-import { v4 } from "uuid";
 import { sqlConfig } from "../config/sqlconfig";
 
 export class projectServices {
@@ -9,18 +8,17 @@ export class projectServices {
     try {
       let pool = await mssql.connect(sqlConfig);
 
-      let results = await (
+      let results = (
         await pool
           .request()
-          .input("id", v4())
-          .input("name", project.project_name)
+          .input("id", project.id)
+          .input("name", project.name)
           .input("description", project.description)
           .input("end_date", project.end_date)
           .input("created_at", project.created_at)
           .input("updated_at", project.updated_at)
           .execute("createProject")
       ).rowsAffected;
-
       console.log(results);
 
       if (results[0] == 1) {
@@ -37,9 +35,11 @@ export class projectServices {
         };
       }
     } catch (error) {
+      console.log(error);
+
       return {
         success: false,
-        message: "An error occurred",
+        message: error,
         data: null,
       };
     }
@@ -53,8 +53,6 @@ export class projectServices {
         await pool.request().execute("updatequery")
       ).recordset;
 
-      console.log(ProjectExists);
-
       if (lodash.isEmpty(ProjectExists)) {
         return {
           success: false,
@@ -66,7 +64,7 @@ export class projectServices {
           await pool
             .request()
             .input("id", ProjectExists[0].id)
-            .input("name", project.project_name)
+            .input("name", project.name)
             .input("description", project.description)
             .input("end_date", project.end_date)
             .input("updated_at", project.updated_at)
@@ -101,6 +99,7 @@ export class projectServices {
       let pool = await mssql.connect(sqlConfig);
 
       let response = (await pool.request().execute("fetchProjects")).recordset;
+
       return {
         success: true,
         message: "Projects found",
