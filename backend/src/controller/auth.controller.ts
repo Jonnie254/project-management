@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { User } from "../interfaces/users";
+import { User, user_login } from "../interfaces/users";
 import { authorization } from "../services/authorization";
 import { UserService } from "../services/users.services";
 
@@ -20,8 +20,8 @@ export const register = async (req: Request, res: Response) => {
 
 export const login = async (req: Request, res: Response) => {
   const auth = new authorization();
-  const { email, password } = req.body;
-  const login = await auth.Login({ email, password });
+  const login_details: user_login = req.body;
+  const login = await auth.Login(login_details);
   if (!login.success) {
     return res
       .status(401)
