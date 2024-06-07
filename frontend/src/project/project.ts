@@ -8,7 +8,7 @@ interface Project {
 
 interface User {
   id?: number;
-  fullname: string;
+  name: string;
   email: string;
 }
 
@@ -55,8 +55,11 @@ const addProject = async (newProject: Project) => {
 
 // Fetch users from the server
 const fetchUsers = async () => {
-  const response = await fetch("http://localhost:3002/users/all");
-  const data = await response.json();
+  const response = await (
+    await fetch("http://localhost:3002/users/all")
+  ).json();
+  const data = response.data;
+
   return data;
 };
 
@@ -151,14 +154,13 @@ const populateUsersDropdown = async () => {
     let assignUserInput = document.querySelector(
       "#assignUser"
     ) as HTMLSelectElement;
-    let users = [{ id: 1, fullname: "John Doe", email: "TEST" }];
-    // users = await fetchUsers();
+    users = await fetchUsers();
 
     assignUserInput.innerHTML = ""; // Clear existing options
     users.forEach((user) => {
       const option = document.createElement("option");
       option.value = user.email;
-      option.textContent = user.fullname;
+      option.textContent = user.name;
       if (user.id === 1) {
         option.selected = true;
       }
@@ -497,7 +499,7 @@ const renderUsers = async () => {
     const row = document.createElement("tr") as HTMLTableRowElement;
     row.innerHTML = `
    
-   <td>${user.fullname}</td>
+   <td>${user.name}</td>
     <td>${user.email}</td>
 
    `;
