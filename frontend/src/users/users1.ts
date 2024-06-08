@@ -1,13 +1,20 @@
+interface User {
+  fname: string;
+  email: string;
+  password: string;
+}
+
 function validateName(name: string): boolean {
   return name.trim() !== "";
 }
 
 function validateEmail(email: string): boolean {
-  return email.trim() !== "";
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return re.test(email);
 }
 
 function validatePassword(password: string): boolean {
-  return password.trim() !== "";
+  return password.trim().length >= 6; // Example validation
 }
 
 function validateConfirmPassword(
@@ -25,14 +32,8 @@ function displayError(
   const element = document.getElementById(elementId) as HTMLDivElement;
   if (element) {
     element.style.display = show ? "block" : "none";
-    if (message) element.textContent = message;
+    element.textContent = show ? message : "";
   }
-}
-
-interface User {
-  fname: string;
-  email: string;
-  password: string;
 }
 
 const popUp = document.getElementById("pop-up") as HTMLDivElement;
@@ -42,11 +43,29 @@ const formRegister = document.getElementById(
 ) as HTMLFormElement;
 const formLogin = document.getElementById("form-id") as HTMLFormElement;
 
-const openPopUp = () => {
+const openPopUp = (
+  title: string,
+  message: string,
+  iconName: string,
+  iconClass: string
+) => {
+  const popUpTitle = document.getElementById(
+    "popup-title"
+  ) as HTMLHeadingElement;
+  const popUpMessage = document.getElementById(
+    "popup-message"
+  ) as HTMLParagraphElement;
+  const popUpIcon = document.getElementById("popup-icon") as HTMLElement;
+
+  popUpTitle.textContent = title;
+  popUpMessage.textContent = message;
+  popUpIcon.setAttribute("name", iconName);
+  popUpIcon.className = `tick ${iconClass}`; // Update the class for color
+
   popUp.classList.add("show");
   setTimeout(() => {
     popUp.classList.remove("show");
-  }, 20000);
+  }, 2000);
 };
 
 if (formRegister) {
@@ -79,12 +98,16 @@ if (formRegister) {
     }
 
     if (!validateEmail(emailRegister)) {
-      displayError("email-error", true, "Email is required");
+      displayError("email-error", true, "Invalid email format");
       return;
     }
 
     if (!validatePassword(passwordRegister)) {
-      displayError("password-error", true, "Password is required");
+      displayError(
+        "password-error",
+        true,
+        "Password must be at least 6 characters"
+      );
       return;
     }
 
@@ -94,27 +117,60 @@ if (formRegister) {
     }
 
     // Register user
-    const response = await fetch("http://localhost:3002/auth/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        user_id: Date.now().toString(),
-        fname: nameRegister,
-        email: emailRegister,
-        password: passwordRegister,
-      }),
-    });
+    try {
+      const response = await fetch("http://localhost:3002/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: nameRegister,
+          email: emailRegister,
+          password: passwordRegister,
+        }),
+      });
 
-    if (response.ok) {
-      openPopUp();
-      formRegister.reset();
-    } else {
       const result = await response.json();
-      alert("Error: " + result.message);
+
+      if (result.success) {
+        openPopUp(
+          "Thank you",
+          "Account has been successfully created",
+          "checkmark-circle-outline",
+          "icon-success"
+        );
+        setTimeout(() => {
+          navigateToLogin();
+        }, 4000);
+      } else if (result.message === "Email is in use") {
+        openPopUp(
+          "Error",
+          "Email is already in use",
+          "close-circle-outline",
+          "icon-failure"
+        );
+      } else {
+        openPopUp(
+          "Error",
+          "An error occurred while creating the account",
+          "close-circle-outline",
+          "icon-failure"
+        );
+      }
+    } catch (error) {
+      console.error("Error registering user:", error);
+      openPopUp(
+        "Error",
+        "Network error. Please try again later.",
+        "close-circle-outline",
+        "icon-failure"
+      );
     }
   });
+}
+
+function navigateToLogin() {
+  window.location.href = "login.html";
 }
 
 if (formLogin) {
@@ -134,7 +190,7 @@ if (formLogin) {
 
     // Validate form inputs
     if (!validateEmail(emailLogin)) {
-      displayError("email-error", true, "Email is required");
+      displayError("email-error", true, "Invalid email format");
       return;
     }
 
@@ -144,25 +200,47 @@ if (formLogin) {
     }
 
     // Login user
-    const response = await fetch(
-      `http://localhost:3001/users?email=${emailLogin}&password=${passwordLogin}`
-    );
-    const users: User[] = await response.json();
+    try {
+      const response = await fetch("http://localhost:3002/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: emailLogin,
+          password: passwordLogin,
+        }),
+      });
+      console.log(response);
 
-    if (users.length === 0) {
-      alert("Invalid email or password");
-    } else {
-      // Check if the email and password match the user in the database
-      const user = users.find(
-        (u) => u.email === emailLogin && u.password === passwordLogin
-      );
+      const result = await response.json();
 
-      if (user) {
-        // Redirect to user.dashboard.html
-        window.location.href = "user.dashboard.html";
+      if (result.success) {
+        openPopUp(
+          "Success",
+          "Login successful",
+          "checkmark-circle-outline",
+          "icon-success"
+        );
+        setTimeout(() => {
+          window.location.href = "user.dashboard.html";
+        }, 2000);
       } else {
-        alert("Invalid email or password");
+        openPopUp(
+          "Error",
+          "Invalid email or password",
+          "close-circle-outline",
+          "icon-failure"
+        );
       }
+    } catch (error) {
+      console.error("Error logging in user:", error);
+      openPopUp(
+        "Error",
+        "Network error. Please try again later.",
+        "close-circle-outline",
+        "icon-failure"
+      );
     }
   });
 }

@@ -14,6 +14,11 @@ body {
   align-items: center;
   place-content: center;
 }
+.container-form h2 {
+  font-size: 30px;
+  color: #0077b6;
+  text-align: center;
+}
 .login-container {
   background-color: #ffffff;
   padding: 20px;
@@ -55,14 +60,15 @@ form input {
 }
 button {
   padding: 10px 30px;
-  background-color: #0077b6;
+  background-color: slateblue;
   color: #ffffff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   outline: none;
-  width: 250px;
+
   margin: 0 auto;
+  font-size: 16px;
 }
 form input:focus {
   border: 2px solid #0077b6;
@@ -76,4 +82,31 @@ form a {
   color: red;
   text-align: center;
   display: none;
+}
+#pop-up {
+  visibility: hidden;
+  opacity: 0;
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: visibility 0.3s, opacity 0.3s, transform 0.3s;
+}
+
+#pop-up.show {
+  visibility: visible;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+.icon-success {
+  color: green;
+}
+
+.icon-failure {
+  color: red;
 }
