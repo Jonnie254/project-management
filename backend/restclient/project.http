@@ -6,7 +6,13 @@ POST http://localhost:3002/projects/create
 Content-Type: application/json
 
 {
-    "name":"Melissa Doe",
-    "description":"melissa90@gmail.com",
-    "end_date":"2024-06-06"
+    "id": "proj003",
+    "name": "Project Gamma",
+    "description": "Description for Project Gamma",
+    "end_date": "2024-11-30",
+    "user_id": "user001",
+    "created_at": "2024-06-08T12:00:00Z",
+    "updated_at": "2024-06-08T12:00:00Z"
 }
+
+
