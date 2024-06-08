@@ -34,7 +34,10 @@ export const login = async (req: Request, res: Response) => {
 };
 
 export const logout = async (req: Request, res: Response) => {
-  return res.status(200).json("response");
+  res.clearCookie("token");
+  return res
+    .status(200)
+    .json({ success: true, message: "Logged out", data: null });
 };
 
 export const updateDetails = async (req: Request, res: Response) => {
