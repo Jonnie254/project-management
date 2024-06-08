@@ -3,7 +3,7 @@ import { User } from "../interfaces/user";
 import { Authorization } from "../services/authorization";
 import { v4 } from "uuid";
 import { user_login } from "../interfaces/user_login";
-import { sendEmail } from "../background-services/mailer";
+// import { sendEmail } from "../background-services/mailer";
 
 export const register = async (req: Request, res: Response) => {
   let user: User = req.body;

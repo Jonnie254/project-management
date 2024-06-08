@@ -22,11 +22,18 @@ app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
   }
   next();
 });
+const noResource = (req: Request, res: Response) => {
+  res
+    .status(404)
+    .json({ success: false, message: "No resource found", data: null });
+};
 
 app.use("/auth", authRouter);
 app.use("/projects", verifyToken, verifyAdmin, projectRouter);
 app.use("/users", verifyToken, verifyAdmin, userRouter);
 app.use("/my-project", verifyToken, myProjectRouter);
+
+app.use(noResource);
 
 const port = 3002;
 

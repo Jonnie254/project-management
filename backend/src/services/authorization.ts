@@ -98,14 +98,6 @@ export class Authorization implements Auth {
     }
   }
 
-  async logout(): Promise<Res> {
-    return {
-      success: true,
-      message: "Logged out",
-      data: null,
-    };
-  }
-
   async updateDetails(userDetails: user_details): Promise<Res> {
     try {
       let results = (
