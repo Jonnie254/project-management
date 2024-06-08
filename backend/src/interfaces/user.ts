@@ -5,8 +5,3 @@ export interface User {
   password: string;
   role: string;
 }
-
-export interface user_login {
-  email: string;
-  password: string;
-}
