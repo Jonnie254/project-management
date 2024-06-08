@@ -211,7 +211,6 @@ if (formLogin) {
           password: passwordLogin,
         }),
       });
-      console.log(response);
 
       const result = await response.json();
 
