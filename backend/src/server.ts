@@ -1,14 +1,18 @@
 import express, { NextFunction, Request, Response, json } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import cookieParser from "cookie-parser";
+
 import authRouter from "./router/auth.router";
 import projectRouter from "./router/project.router";
 import userRouter from "./router/user.router";
+import { verifyToken } from "./middleware/verifyToken";
 
 dotenv.config();
 const app = express();
 app.use(json());
 app.use(cors());
+app.use(cookieParser());
 
 app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
   if (error) {
@@ -18,8 +22,8 @@ app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
 });
 
 app.use("/auth", authRouter);
-app.use("/projects", projectRouter);
-app.use("/users", userRouter);
+app.use("/projects", verifyToken, projectRouter);
+app.use("/users", verifyToken, userRouter);
 
 const port = 3002;
 

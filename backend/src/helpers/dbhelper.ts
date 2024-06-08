@@ -1,8 +1,5 @@
 import mssql from "mssql";
 import { sqlConfig } from "../config/sqlconfig";
-import dotenv from "dotenv";
-
-dotenv.config();
 
 export default class Connection {
   static async query(query: string) {

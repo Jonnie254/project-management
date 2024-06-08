@@ -107,6 +107,12 @@ export class projectServices implements ProjectService {
           message: "Assigned user does not exist",
           data: null,
         };
+      } else if (error.message.includes("Violation of UNIQUE KEY constraint")) {
+        return {
+          success: false,
+          message: "User has already been assigned a project",
+          data: null,
+        };
       }
 
       return {

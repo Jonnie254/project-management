@@ -16,7 +16,6 @@ export class Authorization implements Auth {
           email: login.email,
         })
       ).recordset;
-
       if (user.length < 1) {
         return {
           success: false,
@@ -25,9 +24,7 @@ export class Authorization implements Auth {
         };
       }
       let hashed_password = user[0].password;
-
       let PasswordMatch = bcrypt.compareSync(login.password, hashed_password);
-
       if (!PasswordMatch) {
         return {
           success: false,
@@ -35,15 +32,15 @@ export class Authorization implements Auth {
           data: null,
         };
       }
-      // let { name, password, ...rest } = user[0];
+      let { password, ...rest } = user[0];
 
-      // jwt.sign(rest, process.env.SECRET_KEY as string, {
-      //   expiresIn: "2h",
-      // });
+      const token = jwt.sign(rest, process.env.JWT_SECRET as string, {
+        expiresIn: "10s",
+      });
       return {
         success: true,
         message: "Logged in successfully",
-        data: null,
+        data: token,
       };
     } catch (error) {
       return {
@@ -67,19 +64,23 @@ export class Authorization implements Auth {
         })
       ).rowsAffected;
 
-      if ((results[0] = 1)) {
-        return {
-          success: true,
-          message: "Account successfully created",
-          data: null,
-        };
-      } else {
+      if (results[0] < 1) {
         return {
           success: false,
           message: "Failed to create account",
           data: null,
         };
       }
+      let { password, ...rest } = user;
+
+      const token = jwt.sign(rest, process.env.JWT_SECRET as string, {
+        expiresIn: "1h",
+      });
+      return {
+        success: true,
+        message: "Account successfully created",
+        data: token,
+      };
     } catch (error: any) {
       if (error.message.includes("Violation of UNIQUE KEY constraint")) {
         return {
