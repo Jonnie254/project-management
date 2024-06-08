@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {
   createProject,
-  deleteProject,
+  Deleteproject,
   fetchProject,
   fetchProjects,
   updateProject,
@@ -10,8 +10,8 @@ import {
 const projectRouter = Router();
 
 projectRouter.post("/create", createProject);
-projectRouter.put("/update:project_id", updateProject);
-projectRouter.delete("/delete", deleteProject);
+projectRouter.put("/:project_id", updateProject);
+projectRouter.delete("/:project_id", Deleteproject);
 projectRouter.get("/all", fetchProjects);
 projectRouter.get("/:project_id", fetchProject);
 

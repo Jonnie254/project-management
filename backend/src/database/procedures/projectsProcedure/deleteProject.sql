@@ -1,5 +1,6 @@
 CREATE OR ALTER PROCEDURE deleteProject
+@id VARCHAR(255)
 AS
 BEGIN
-SELECT * FROM projects WHERE id = '${project_id}'
+DELETE FROM projects WHERE id = @id
 END

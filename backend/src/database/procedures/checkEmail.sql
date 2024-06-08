@@ -1,5 +1,5 @@
 CREATE OR ALTER PROCEDURE checkEmail
 AS 
 BEGIN
-SELECT * FROM Users WHERE email = '${user.email}'
+SELECT * FROM Users WHERE email = @email
 END

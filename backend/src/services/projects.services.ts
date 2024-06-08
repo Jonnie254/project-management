@@ -1,5 +1,4 @@
 import mssql from "mssql";
-import lodash from "lodash";
 import { Projects } from "../interfaces/projects";
 import { sqlConfig } from "../config/sqlconfig";
 
@@ -9,19 +8,18 @@ export class projectServices {
       let pool = await mssql.connect(sqlConfig);
 
       let results = (
-        await pool
-          .request()
-          .input("id", project.id)
-          .input("name", project.name)
-          .input("description", project.description)
-          .input("end_date", project.end_date)
-          .input("created_at", project.created_at)
-          .input("updated_at", project.updated_at)
+        await pool.request()
+          .input("id", mssql.VarChar(255), project.id)
+          .input("name", mssql.VarChar(255), project.name)
+          .input("description", mssql.VarChar(255), project.description)
+          .input("end_date", mssql.DateTime2, project.end_date)
+          .input("users_id", mssql.VarChar(255), project.users_id)
+          .input("created_at", mssql.DateTime2, project.created_at)
+          .input("updated_at", mssql.DateTime2, project.updated_at)
           .execute("createProject")
       ).rowsAffected;
-      console.log(results);
 
-      if (results[0] == 1) {
+      if (results[0] === 1) {
         return {
           success: true,
           message: "Project created successfully",
@@ -39,7 +37,7 @@ export class projectServices {
 
       return {
         success: false,
-        message: error,
+        message: "Server error",
         data: null,
       };
     }
@@ -48,42 +46,59 @@ export class projectServices {
   async updateProject(project_id: string, project: Projects) {
     try {
       let pool = await mssql.connect(sqlConfig);
-
-      let ProjectExists = await (
-        await pool.request().execute("updatequery")
+      let ProjectExists = (
+        await pool.request()
+          .input("id", mssql.VarChar(255), project_id)
+          .execute("selectOne")
       ).recordset;
 
-      if (lodash.isEmpty(ProjectExists)) {
+      if (ProjectExists.length === 0) {
         return {
           success: false,
           message: "Project not found",
           data: null,
         };
-      } else {
-        let results = (
-          await pool
-            .request()
-            .input("id", ProjectExists[0].id)
-            .input("name", project.name)
-            .input("description", project.description)
-            .input("end_date", project.end_date)
-            .input("updated_at", project.updated_at)
-            .execute("updateProject")
-        ).rowsAffected;
+      }
+      if (project.users_id && project.users_id.trim() !== '') {
+        let UserExists = (
+          await pool.request()
+            .input("id", mssql.VarChar(255), project.users_id.trim())
+            .execute("selectOne")  
+        ).recordset;
 
-        if (results[0] < 1) {
+        if (UserExists.length === 0) {
           return {
             success: false,
-            message: "Error while updating",
-            data: null,
-          };
-        } else {
-          return {
-            success: true,
-            message: "Project Updated successfully",
+            message: "Invalid user ID",
             data: null,
           };
         }
+      }
+
+      let results = (
+        await pool.request()
+          .input("id", mssql.VarChar(255), project_id)
+          .input("name", mssql.VarChar(255), project.name )
+          .input("description", mssql.VarChar(255), project.description )
+          .input("end_date", mssql.DateTime2, project.end_date || new Date())
+          .input("users_id", mssql.VarChar(255), project.users_id ? project.users_id.trim() : null)
+          .input("created_at", mssql.DateTime2, project.created_at || new Date())
+          .input("updated_at", mssql.DateTime2, project.updated_at || new Date())
+          .execute("updateProject")
+      ).rowsAffected;
+
+      if (results[0] < 1) {
+        return {
+          success: false,
+          message: "Error while updating",
+          data: null,
+        };
+      } else {
+        return {
+          success: true,
+          message: "Project updated successfully",
+          data: null,
+        };
       }
     } catch (error) {
       return {
@@ -101,8 +116,8 @@ export class projectServices {
       let response = (await pool.request().execute("fetchProjects")).recordset;
 
       return {
-        success: true,
-        message: "Projects found",
+        success:true,
+        message:"Suuccessful",
         data: response,
       };
     } catch (error) {
@@ -117,12 +132,16 @@ export class projectServices {
   async fetchProject(project_id: string) {
     try {
       let pool = await mssql.connect(sqlConfig);
-      let response = (await pool.request().execute("selectOne")).recordset;
+      let response = (
+        await pool.request()
+          .input("id", mssql.VarChar(255), project_id)
+          .execute("selectOne")
+      ).recordset;
 
       if (response.length < 1) {
         return {
           success: false,
-          message: "No projects Found",
+          message: "No projects found",
           data: null,
         };
       } else {
@@ -141,31 +160,34 @@ export class projectServices {
     }
   }
 
-  async deleteProject(project_id: string) {
+  async deleteProjects(project_id: string) {
     try {
       let pool = await mssql.connect(sqlConfig);
-      let response = (await pool.request().execute("deleteProject")).recordset;
 
-      if (response.length < 1) {
+      const result = await pool.request()
+        .input("id", mssql.VarChar(255), project_id)
+        .execute("deleteProject");
+      
+    
+      if (result.rowsAffected[0] === 0) {
         return {
           success: false,
-          message: "Project not Found",
-          data: null,
-        };
-      } else {
-        await pool.request().execute("deleteProject");
-        return {
-          success: true,
-          message: "Project deleted successfully",
+          message: "Project not found",
           data: null,
         };
       }
+      return {
+        success: true,
+        message: "Project deleted successfully",
+        data: null,
+      };
     } catch (error) {
+      console.error("Error deleting project:", error); // Added logging for debugging
       return {
         success: false,
         message: "An error occurred",
         data: null,
-      };
+      }
     }
   }
 }

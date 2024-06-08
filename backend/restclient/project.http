@@ -8,5 +8,26 @@ Content-Type: application/json
 {
     "name":"Melissa Doe",
     "description":"melissa90@gmail.com",
-    "end_date":"2024-06-06"
+    "end_date":"2024-06-06",
+    "users_id":"5efa41e3-09d7-4850-b196-844774b4632c"
 }
+
+####get one project by ID
+GET http://localhost:3002/projects/914b5c23-a358-4884-8f6d-70e56f6e9974
+Content-Type: application/json
+
+####update project by id
+
+PUT http://localhost:3002/projects/99f949a7-04ce-4112-be90-3624b760f751
+
+Content-Type: application/json
+{
+    "name":"Melissa Wanja",
+    "description":"meliswqlnskak",
+    "end_date":"2024-06-06",
+    "users_id":"5efa41e3-09d7-4850-b196-844774b4632c "
+}
+
+####delete project
+DELETE http://localhost:3002/projects/914b5c23-a358-4884-8f6d-70e56f6e9974
+Content-Type: application/json

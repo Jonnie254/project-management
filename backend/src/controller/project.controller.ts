@@ -11,6 +11,7 @@ export const createProject = async (req: Request, res: Response) => {
     name: req.body.name,
     description: req.body.description,
     end_date: req.body.end_date,
+    users_id:req.body.users_id,
     created_at: now,
     updated_at: now,
   };
@@ -44,10 +45,10 @@ export const updateProject = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteProject = async (req: Request, res: Response) => {
+export const Deleteproject = async (req: Request, res: Response) => {
   const projectManager = new projectServices();
   const project_id = req.params.project_id;
-  const deletedProject = await projectManager.deleteProject(project_id);
+  const deletedProject = await projectManager.deleteProjects(project_id);
   if (deletedProject.success) {
     return res
       .status(200)

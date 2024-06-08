@@ -34,13 +34,13 @@ export class Authorization {
         if (PasswordMatch) {
           let { name, password, ...rest } = user[0];
 
-          jwt.sign(rest, process.env.SECRET_KEY as string, {
+        let token =  jwt.sign(rest, process.env.SECRET_KEY as string, {
             expiresIn: "2h",
           });
           return {
             success: true,
             message: "Logged in successfully",
-            data: null,
+            data: token,
           };
         } else {
           return {

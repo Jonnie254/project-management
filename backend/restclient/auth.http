@@ -3,13 +3,13 @@ Content-Type: application/json
 
 
 {
-    "name":"Melissa Doe",
-    "email":"mel@gmail.com",
-    "password":"123"
+    "name":"Melissa Wanja",
+    "email":"melwa@gmail.com",
+    "password":"1223"
 }
 
 #####
-GET http://localhost:3002/auth/login
+POST http://localhost:3002/auth/login
 Content-Type: application/json
 
 {
