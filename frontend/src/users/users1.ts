@@ -118,13 +118,6 @@ if (formRegister) {
 
     // Register user
     try {
-      console.log(
-        "Registering user",
-        nameRegister,
-        emailRegister,
-        passwordRegister
-      );
-
       const response = await fetch("http://localhost:3002/auth/register", {
         method: "POST",
         headers: {
@@ -218,7 +211,6 @@ if (formLogin) {
           password: passwordLogin,
         }),
       });
-
       const result = await response.json();
 
       if (result.success) {
