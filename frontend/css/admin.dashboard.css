@@ -14,7 +14,7 @@ body {
   background: linear-gradient();
 }
 .sideBar {
-  width: 30vw;
+  width: 25vw;
   height: 100vh;
   background-color: #1d1d1d;
   display: flex;
@@ -210,20 +210,47 @@ select:focus {
 
 .main-body {
   margin: 30px auto;
-  width: 80%;
-  
+  width: 85%;
+
 }
-.cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 16px;
+.dashboard-wrapper {
+ height: 75vh;
+ display: grid;
+ gap: 20px;
+ grid-template-columns: repeat(3,1fr);
+ grid-template-rows: repeat(2,1fr);
+ grid-template-areas: 
+   'c1 c2 c3'
+   'a a  a'
+ 
+ ;
+}
+.card1{
+  grid-area: c1;
+}
+.card2{
+  grid-area: c2;
+}
+.card3{
+  grid-area: c3;
+}
+.card1,.card2,.card3 {
   text-align: center;
-}
-.card {
+  
   border-radius: 10px;
   padding: 25px;
   background-color: #fff;
   box-shadow: 0px 0px 14px rgb(236, 233, 233);
+}
+
+.analytics{
+  
+   background-image: url(../assests/analysis.png);
+   background-position: center;
+   background-size: cover;
+   background-repeat: no-repeat;
+   grid-area: a;
+ 
 }
 /* Overlay style */
 .modal-overlay {

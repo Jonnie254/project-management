@@ -389,26 +389,31 @@ createIcon.addEventListener("click", () => {
 const renderDashboard = () => {
   mainBody.innerHTML = `
     
-    <div class="cards">
-      <div class="card">
+    <div class="dashboard-wrapper">
+      <div class="card1">
         <ion-icon name="card-outline" class="card-icon"></ion-icon>
         <p>Projects</p>
         <h2>${projects.length}</h2>
       </div>
-      <div class="card">
+      <div class="card2">
         <ion-icon name="people-outline" class="card-icon"></ion-icon>
         <p>Users</p>
         <h2>${users.length}</h2>
       </div>
-      <div class="card">
+      <div class="card3">
         <ion-icon name="timer-outline" class="card-icon"></ion-icon>
         <p>Time Spent</p>
         <h2>20HRS</h2>
       
     </div>
-    <div class="analysis">
+   
+     <div class="analytics">
+    
     </div>
     </div>
+   
+    
+    
     
     `;
 };

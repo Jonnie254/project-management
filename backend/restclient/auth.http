@@ -5,17 +5,18 @@ Content-Type: application/json
 
 
 {
-    "name":"Ronny Doe",
-    "email":"ronny@yopmail.com",
-    "password":"1234"
+    "name":"John Ndichu",
+    "email":"johnndichu@gmail.com",
+    "password":"123"
 }
 
 ###login user
 GET http://localhost:5203/auth/login
+data: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBOZGljaHUiLCJlbWFpbCI6ImpvaG5uZGljaHVAZ21haWwuY29tIiwiaWQiOiJhMjY5MmFkNy04OTI1LTQzNmMtOTgxYS0zNzlkNGVkNmEzMWUiLCJpYXQiOjE3MTc5MzAwODksImV4cCI6MTcxNzkzMDk4OX0.XP7dnPqIYhSz6YTLQFeGW8p1Ixd-8Y1Tj5XjNoNLVCM
 Content-Type: application/json
 
 {
-    "email":"mel@yopmail.com",
+    "email":"johnndichu@gmail.com",
     "password":"123"
 }
 
