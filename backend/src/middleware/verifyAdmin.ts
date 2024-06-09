@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { UserServices } from "../services/users.services";
+import { UsersServices } from "../services/users.services";
 
 export const verifyAdmin = async (
   req: Request,
@@ -12,7 +12,7 @@ export const verifyAdmin = async (
     const result = jwt.verify(token, process.env.JWT_SECRET as string);
     const id: string = (result as any).id;
 
-    const userService = new UserServices();
+    const userService = new UsersServices();
     const userResponse = await userService.getUser(id);
     if (!userResponse.success) {
       return res.status(401).json({
