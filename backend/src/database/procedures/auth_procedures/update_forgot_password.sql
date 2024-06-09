@@ -5,4 +5,4 @@ CREATE PROCEDURE update_forgot_password (
 AS
 BEGIN
     UPDATE users SET password=@password WHERE id=@id
-END
+END;

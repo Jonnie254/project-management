@@ -8,4 +8,4 @@ AS
 BEGIN
  INSERT INTO users (id, name, email, password)
  VALUES(@id,@name,@email,@password)
-END
+END;

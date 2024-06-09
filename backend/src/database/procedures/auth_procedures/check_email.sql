@@ -4,4 +4,4 @@ CREATE PROCEDURE check_email(
 AS
 BEGIN
     SELECT id, name, email, role, password FROM users WHERE email = @email
-END
+END;

@@ -6,4 +6,4 @@ CREATE PROCEDURE update_details (
 AS
 BEGIN
     UPDATE users SET name=@name, email=@email WHERE id=@id
-END
+END;

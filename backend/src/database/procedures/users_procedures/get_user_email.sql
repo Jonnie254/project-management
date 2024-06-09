@@ -4,4 +4,4 @@ CREATE PROCEDURE get_user_email(
 AS
 BEGIN
     select id, name, email, role from users WHERE email = @email
-END
+END;

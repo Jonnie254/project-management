@@ -4,4 +4,4 @@ CREATE PROCEDURE get_project (
 AS
 BEGIN 
 SELECT * FROM projects WHERE id = @id
-END
+END;

@@ -4,4 +4,4 @@ CREATE PROCEDURE delete_project(
 AS
 BEGIN
     DELETE FROM projects WHERE id = @id
-END
+END;
