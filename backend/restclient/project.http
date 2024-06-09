@@ -1,12 +1,18 @@
-GET http://localhost:3002/projects/all
+
+
+GET http://localhost:5203/projects/all
 Content-Type: application/json
 
 ### Create a project
-POST http://localhost:3002/projects/create
+POST http://localhost:5203/projects/create
 Content-Type: application/json
 
+
 {
-    "name":"Melissa Doe",
-    "description":"melissa90@gmail.com",
-    "end_date":"2024-06-06"
+
+  "name": "Sample Project",
+  "description": "This is a sample project.",
+  "end_date": "2024-06-30",
+  "user_id": "85108478-b981-4c80-a0e9-621f8804904e"
+  
 }

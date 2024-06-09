@@ -1,1 +1,1 @@
-CREATE DATABASE projectManagement
+CREATE DATABASE projectManagement;

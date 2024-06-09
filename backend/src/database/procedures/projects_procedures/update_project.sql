@@ -9,4 +9,4 @@ CREATE PROCEDURE update_project(
 AS
 BEGIN
 UPDATE projects SET name=@name, description=@description, end_date=@end_date, user_id=@user_id, updated_at=@updated_at WHERE id=@id
-END
+END;

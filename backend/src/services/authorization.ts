@@ -33,14 +33,13 @@ export class Authorization implements Auth {
         };
       }
       let { password, ...rest } = user[0];
-
       const token = jwt.sign(rest, process.env.JWT_SECRET as string, {
-        expiresIn: "10s",
+        expiresIn: "15m",
       });
       return {
         success: true,
         message: "Logged in successfully",
-        data: token,
+        data: { role: user[0].role, token },
       };
     } catch (error) {
       return {
@@ -74,12 +73,12 @@ export class Authorization implements Auth {
       let { password, ...rest } = user;
 
       const token = jwt.sign(rest, process.env.JWT_SECRET as string, {
-        expiresIn: "1h",
+        expiresIn: "15m",
       });
       return {
         success: true,
         message: "Account successfully created",
-        data: token,
+        data: { role: user.role, token },
       };
     } catch (error: any) {
       if (error.message.includes("Violation of UNIQUE KEY constraint")) {
@@ -96,14 +95,6 @@ export class Authorization implements Auth {
         };
       }
     }
-  }
-
-  async logout(): Promise<Res> {
-    return {
-      success: true,
-      message: "Logged out",
-      data: null,
-    };
   }
 
   async updateDetails(userDetails: user_details): Promise<Res> {

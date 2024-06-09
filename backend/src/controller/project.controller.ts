@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { v4 } from "uuid";
 import { Project } from "../interfaces/project";
 import { projectServices } from "../services/projects.services";
+import { getIDFromToken } from "../middleware/getIDFromToken";
 
 export const createProject = async (req: Request, res: Response) => {
   const now = new Date().toISOString();
@@ -54,6 +55,23 @@ export const getProject = async (req: Request, res: Response) => {
 export const getProjects = async (req: Request, res: Response) => {
   const projects = new projectServices();
   const response = await projects.getProjects();
+  if (!response.success) {
+    return res.status(400).json(response);
+  }
+  return res.status(200).json(response);
+};
+
+export const getMyProject = async (req: Request, res: Response) => {
+  const user_id = getIDFromToken(req);
+  if (!user_id) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid token",
+      data: null,
+    });
+  }
+  const projects = new projectServices();
+  const response = await projects.getMyProject(user_id);
   if (!response.success) {
     return res.status(400).json(response);
   }

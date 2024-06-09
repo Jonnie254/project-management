@@ -6,7 +6,6 @@ import { user_login } from "./user_login";
 export interface Auth {
   login(login: user_login): Promise<Res>;
   register(user: User): Promise<Res>;
-  logout(): Promise<Res>;
   updateDetails(userDetails: user_details): Promise<Res>;
   updatePassword(
     id: string,

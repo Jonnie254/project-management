@@ -3,7 +3,7 @@ import { User } from "../interfaces/user";
 import { Authorization } from "../services/authorization";
 import { v4 } from "uuid";
 import { user_login } from "../interfaces/user_login";
-import { sendEmail } from "../background-services/mailer";
+// import { sendEmail } from "../background-services/mailer";
 
 export const register = async (req: Request, res: Response) => {
   let user: User = req.body;
@@ -34,7 +34,10 @@ export const login = async (req: Request, res: Response) => {
 };
 
 export const logout = async (req: Request, res: Response) => {
-  return res.status(200).json("response");
+  res.clearCookie("token");
+  return res
+    .status(200)
+    .json({ success: true, message: "Logged out", data: null });
 };
 
 export const updateDetails = async (req: Request, res: Response) => {
