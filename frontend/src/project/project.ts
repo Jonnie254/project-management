@@ -23,17 +23,12 @@ const mainBody = document.querySelector(".main-body") as HTMLDivElement;
 const createIcon = document.querySelector(".icon") as HTMLButtonElement;
 const modalOverlay = document.querySelector(".modal-overlay") as HTMLDivElement;
 const nameInput = document.querySelector("#nameInput") as HTMLInputElement;
-const descriptionInput = document.querySelector(
-  "#descriptionInput"
-) as HTMLTextAreaElement;
-const endDateInput = document.querySelector(
-  "#endDateInput"
-) as HTMLInputElement;
+const descriptionInput = document.querySelector("#descriptionInput") as HTMLTextAreaElement;
+const endDateInput = document.querySelector("#endDateInput") as HTMLInputElement;
 
-const fetchUnassignedUsers = async () => {
+const fetchUnassignedUsers = async (): Promise<User[]> => {
   try {
     const token = localStorage.getItem("token");
-
     const response = await fetch("http://localhost:3002/users/unassigned", {
       method: "GET",
       headers: {
@@ -42,26 +37,46 @@ const fetchUnassignedUsers = async () => {
       },
     });
     const result = await response.json();
-    console.log(result);
-
     if (result.success) {
-      console.log(result.data);
-
       return result.data;
-    } else if (
-      !result.success &&
-      result.message === "Access denied. You do not have sufficient privileges."
-    ) {
-      window.location.href = "user.dashboard.html";
-    } else if (!result.success && result.message === "Invalid token") {
-      window.location.href = "login.html";
     } else {
-      console.error("Error fetching users:", response.statusText);
+      handleFetchError(result.message);
       return [];
     }
   } catch (error) {
     console.error("Error fetching users:", error);
     return [];
+  }
+};
+const fetchUsers = async (): Promise<User[]> => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await fetch("http://localhost:3002/users/all", {
+      method: "GET",
+      headers: {
+        Authorization: `${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    const result = await response.json();
+    if (result.success) {
+      return result.data;
+    } else {
+      handleFetchError(result.message);
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    return [];
+  }
+};
+const handleFetchError = (message: string): void => {
+  if (message === "Access denied. You do not have sufficient privileges.") {
+    window.location.href = "user.dashboard.html";
+  } else if (message === "Invalid token") {
+    window.location.href = "login.html";
+  } else {
+    console.error("Error fetching users:", message);
   }
 };
 
@@ -131,24 +146,20 @@ const deleteProject = async (id: string): Promise<void> => {
 };
 
 // Show confirmation modal
-const showDeleteConfirmation = (projectId: string) => {
+const showDeleteConfirmation = (projectId: string): void => {
   modalOverlay.innerHTML = `
-          <div class="modal-content">
-              <div class="modalItems">
-                  <p>Are you sure you want to delete this project?</p>
-                  <button id="confirmDelete">Yes</button>
-                  <button id="cancelDelete">No</button>
-              </div>
-          </div>
-      `;
+    <div class="modal-content">
+      <div class="modalItems">
+        <p>Are you sure you want to delete this project?</p>
+        <button id="confirmDelete">Yes</button>
+        <button id="cancelDelete">No</button>
+      </div>
+    </div>
+  `;
   modalOverlay.style.display = "block";
 
-  const confirmDeleteBtn = document.querySelector(
-    "#confirmDelete"
-  ) as HTMLButtonElement;
-  const cancelDeleteBtn = document.querySelector(
-    "#cancelDelete"
-  ) as HTMLButtonElement;
+  const confirmDeleteBtn = document.querySelector("#confirmDelete") as HTMLButtonElement;
+  const cancelDeleteBtn = document.querySelector("#cancelDelete") as HTMLButtonElement;
 
   confirmDeleteBtn.addEventListener("click", async () => {
     try {
@@ -165,41 +176,37 @@ const showDeleteConfirmation = (projectId: string) => {
 };
 
 // Update project
-const updateProject = async (
-  id: string,
-  updatedFields: Partial<Project>
-): Promise<void> => {
-  const token = localStorage.getItem("token");
-  const response = await fetch(`http://localhost:3002/projects/${id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `${token}`,
-    },
-    body: JSON.stringify(updatedFields),
-  });
+const updateProject = async (id: string, updatedFields: Partial<Project>): Promise<void> => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await fetch(`http://localhost:3002/projects/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${token}`,
+      },
+      body: JSON.stringify(updatedFields),
+    });
 
-  if (!response.ok) {
-    throw new Error(`Failed to update project with id ${id}`);
-  }
+    if (!response.ok) {
+      throw new Error(`Failed to update project with id ${id}`);
+    }
 
-  const index = projects.findIndex((project) => project.id === id);
+    const index = projects.findIndex((project) => project.id === id);
 
-  if (index !== -1) {
-    projects[index] = { ...projects[index], ...updatedFields };
+    if (index !== -1) {
+      projects[index] = { ...projects[index], ...updatedFields };
+    }
+  } catch (error) {
+    console.error("Error updating project:", error);
   }
 };
 
 // Populate the assign user dropdown with fetched users
-const populateUsersDropdown = async () => {
+const populateUsersDropdown = async (): Promise<void> => {
   try {
-    let assignUserInput = document.querySelector(
-      "#assignUser"
-    ) as HTMLSelectElement;
-
-    let users = await fetchUnassignedUsers();
-
-    console.log(users);
+    const assignUserInput = document.querySelector("#assignUser") as HTMLSelectElement;
+    const users = await fetchUnassignedUsers();
 
     assignUserInput.innerHTML = ""; // Clear existing options
     users.forEach((user: User) => {
@@ -214,7 +221,7 @@ const populateUsersDropdown = async () => {
 };
 
 // Render the project form modal
-const renderProjectFormModal = (project?: Project) => {
+const renderProjectFormModal = (project?: Project): void => {
   modalOverlay.innerHTML = "";
   const modalContent = document.createElement("div");
   modalContent.className = "modal-content";
@@ -318,47 +325,48 @@ const renderProjectFormModal = (project?: Project) => {
   populateUsersDropdown();
 
   // Handle form submission
-projectForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
+  projectForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
 
-  const nameValue = nameInput.value.trim();
-  const descriptionValue = descriptionInput.value.trim();
-  const endDateValue = endDateInput.value.trim();
-  const assignedUserValue = assignUserSelect.value;
+    const nameValue = nameInput.value.trim();
+    const descriptionValue = descriptionInput.value.trim();
+    const endDateValue = endDateInput.value.trim();
+    const assignedUserValue = assignUserSelect.value;
 
-  // Validate form data
-  let isValid = true;
+    // Validate form data
+    let isValid = true;
 
-  if (!nameValue) {
+    if (!nameValue) {
       nameError.textContent = "Name is required";
       isValid = false;
-  } else {
+    } else {
       nameError.textContent = "";
-  }
+    }
 
-  if (!descriptionValue) {
+    if (!descriptionValue) {
       descriptionError.textContent = "Description is required";
       isValid = false;
-  } else {
+    } else {
       descriptionError.textContent = "";
-  }
+    }
 
-  if (!endDateValue) {
+    if (!endDateValue) {
       endDateError.textContent = "End date is required";
       isValid = false;
-  } else if (new Date(endDateValue) < new Date()) { // Check if end date is before current date
+    } else if (new Date(endDateValue) < new Date()) { // Check if end date is before current date
       endDateError.textContent = "End date cannot be before the current date";
       isValid = false;
-  } else {
+    } else {
       endDateError.textContent = "";
-  }
+    }
 
-  if (!assignedUserValue) {
+    if (!assignedUserValue) {
       assignUserError.textContent = "User assignment is required";
       isValid = false;
-  } else {
+    } else {
       assignUserError.textContent = "";
-  }
+    }
+
     if (isValid) {
       const newProject: Project = {
         name: nameValue,
@@ -398,17 +406,179 @@ createIcon.addEventListener("click", () => {
   renderProjectFormModal();
 });
 
-// Event listener for the project link
-projectLink.addEventListener("click", async () => {
-  try {
-    const allProjects = await fetchProjects();
-    console.log(allProjects);
-  } catch (error) {
-    console.error("Error fetching projects:", error);
+// Render the dashboard section
+const renderDashboard = () => {
+  mainBody.innerHTML = `
+    
+    <div class="dashboard-wrapper">
+      <div class="card1">
+        <ion-icon name="card-outline" class="card-icon"></ion-icon>
+        <p>Projects</p>
+        <h2>${projects.length}</h2>
+      </div>
+      <div class="card2">
+        <ion-icon name="people-outline" class="card-icon"></ion-icon>
+        <p>Users</p>
+        <h2>${users.length}</h2>
+      </div>
+      <div class="card3">
+        <ion-icon name="timer-outline" class="card-icon"></ion-icon>
+        <p>Time Spent</p>
+        <h2>20HRS</h2>
+      
+    </div>
+   
+     <div class="analytics">
+    
+    </div>
+    </div>
+   
+    
+    
+    
+    `;
+};
+
+//Render the projects section
+const renderProjects = async () => {
+  projects = await fetchProjects();
+  mainBody.innerHTML = "";
+
+  const table = document.createElement("table");
+  table.className = "displayTable";
+
+  const headerRow = document.createElement("tr");
+  ["Name", "Description", "User", "End Date", "Actions"].forEach((header) => {
+      const th = document.createElement("th");
+      th.textContent = header;
+      headerRow.appendChild(th);
+  });
+
+  table.appendChild(headerRow);
+
+  //projects.forEach((project: Project) => {
+      const row = document.createElement("tr") as HTMLTableRowElement;
+
+      row.innerHTML = `
+          <td>{project.name}</td>
+          <td>{project.description}</td>
+          <td>{project.assigned_user}</td>
+          <td>{project.end_date}</td>
+          <td>
+              <div class="actions">
+                  <ion-icon name="create-outline" class="editBtn" data-id="{project.id}"></ion-icon>
+                  <ion-icon name="trash-outline" class="deleteBtn" data-id="{project.id}"></ion-icon>
+              </div>
+          </td>
+      `;
+      table.appendChild(row);
+  //});
+
+  mainBody.appendChild(table);
+
+  // Add event listeners for edit and delete buttons
+  const editButtons = document.querySelectorAll(".editBtn") as NodeListOf<HTMLButtonElement>;
+  const deleteButtons = document.querySelectorAll(".deleteBtn") as NodeListOf<HTMLButtonElement>;
+
+  editButtons.forEach((editButton) => {
+      editButton.addEventListener("click", () => {
+          const id = editButton.dataset.id;
+          const project = projects.find((proj) => proj.id === id);
+          if (project) {
+            
+              renderProjectFormModal(project);
+          }
+      });
+  });
+
+  deleteButtons.forEach((deleteButton) => {
+      deleteButton.addEventListener("click", async () => {
+          const id = deleteButton.dataset.id;
+          if (id) {
+              try {
+                  showDeleteConfirmation(id);
+                  await deleteProject(id);
+                  // Re-render projects after deletion
+                  await renderProjects();
+              } catch (error) {
+                  console.error("Error deleting project:", error);
+              }
+          }
+      });
+  });
+};
+// Render the users section
+const renderUsers = async () => {
+  users = await fetchUsers();
+
+  mainBody.innerHTML = " ";
+
+  const table = document.createElement("table") as HTMLTableElement;
+  table.className = "displayTable";
+
+  const headerRow = document.createElement("tr");
+  ["Name", "Email"].forEach((header) => {
+    const th = document.createElement("th");
+    th.textContent = header;
+    headerRow.appendChild(th);
+  });
+
+  table.appendChild(headerRow);
+  users.forEach((user) => {
+    const row = document.createElement("tr") as HTMLTableRowElement;
+    row.innerHTML = `
+     
+     <td>${user.name}</td>
+      <td>${user.email}</td>
+  
+     `;
+    table.appendChild(row);
+  });
+  mainBody.appendChild(table);
+};
+
+//logout
+const logout = async () => {
+  window.location.href = "/frontend/html/login.html";
+};
+
+/// Event listeners for sidebar links
+const links = document.querySelectorAll(".links ul li");
+links.forEach((li) => {
+  const link = li.querySelector("a");
+  const icon = li.querySelector("ion-icon");
+
+  const clickHandler = (event: Event) => {
+    event.preventDefault();
+    const target = (event.currentTarget as HTMLElement).dataset.target;
+    switch (target) {
+      case "dashboard":
+        renderDashboard();
+        break;
+      case "projects":
+        renderProjects();
+        break;
+      case "users":
+        renderUsers();
+        break;
+      case "logout":
+        logout();
+        break;
+      default:
+        setTimeout(() => {
+          renderDashboard();
+        }, 1000);
+        break;
+    }
+  };
+
+  if (link) {
+    link.addEventListener("click", clickHandler);
+  }
+  if (icon) {
+    icon.addEventListener("click", clickHandler);
   }
 });
 
-// Event listener for the back icon
-backIcon.addEventListener("click", () => {
-  console.log("Back icon clicked");
-});
+// Set default content to Dashboard on page load
+renderDashboard();
