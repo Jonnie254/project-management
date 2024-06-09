@@ -357,7 +357,7 @@ const handleFormSubmission = async (id?: string) => {
       if (id) {
         response = await updateProject(id, projectData);
       } else {
-        response = await addProject(projectData);
+        // response = await addProject(projectData);
       }
 
       if (response.success) {

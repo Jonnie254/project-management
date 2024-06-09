@@ -1,8 +1,22 @@
 interface User {
-  fname: string;
+  name: string;
   email: string;
   password: string;
 }
+
+const container = document.getElementById("container") as HTMLElement;
+const registerBtn = document.getElementById("register") as HTMLButtonElement;
+const loginBtn = document.getElementById("login") as HTMLButtonElement;
+
+registerBtn.addEventListener("click", () => {
+  console.log("Register button clicked");
+  container.classList.add("active");
+});
+
+loginBtn.addEventListener("click", () => {
+  console.log("Login button clicked");
+  container.classList.remove("active");
+});
 
 function validateName(name: string): boolean {
   return name.trim() !== "";
@@ -14,7 +28,7 @@ function validateEmail(email: string): boolean {
 }
 
 function validatePassword(password: string): boolean {
-  return password.trim().length >= 6; // Example validation
+  return password.trim().length >= 6;
 }
 
 function validateConfirmPassword(
@@ -41,7 +55,7 @@ const popUp = document.getElementById("pop-up") as HTMLDivElement;
 const formRegister = document.getElementById(
   "form-register"
 ) as HTMLFormElement;
-const formLogin = document.getElementById("form-id") as HTMLFormElement;
+const formLogin = document.getElementById("form-login") as HTMLFormElement;
 
 const openPopUp = (
   title: string,
@@ -71,6 +85,7 @@ const openPopUp = (
 if (formRegister) {
   formRegister.addEventListener("submit", async function (event: Event) {
     event.preventDefault();
+    console.log("Register form submitted");
 
     const nameRegister = (
       document.getElementById("name-register") as HTMLInputElement
@@ -176,6 +191,7 @@ function navigateToLogin() {
 if (formLogin) {
   formLogin.addEventListener("submit", async function (event: Event) {
     event.preventDefault();
+    console.log("Login form submitted");
 
     const emailLogin = (
       document.getElementById("email-login") as HTMLInputElement
