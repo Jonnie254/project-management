@@ -35,7 +35,7 @@ app.use("/my-project", verifyToken, myProjectRouter);
 
 app.use(noResource);
 
-const port = 3002;
+const port = 5203;
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
