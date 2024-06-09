@@ -4,4 +4,4 @@ CREATE PROCEDURE make_admin(
 AS
 BEGIN
     UPDATE users SET role = 'admin' WHERE id = @id
-END
+END;

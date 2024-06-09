@@ -9,7 +9,8 @@ export const verifyAdmin = async (
 ) => {
   try {
     const token = req.cookies.token;
-    const { id } = jwt.verify(token, process.env.JWT_SECRET as string);
+    const result = jwt.verify(token, process.env.JWT_SECRET as string);
+    const id: string = (result as any).id;
 
     const userService = new UserServices();
     const userResponse = await userService.getUser(id);
