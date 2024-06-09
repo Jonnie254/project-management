@@ -42,11 +42,7 @@ const fetchUnassignedUsers = async () => {
       },
     });
     const result = await response.json();
-    console.log(result);
-
     if (result.success) {
-      console.log(result.data);
-
       return result.data;
     } else if (
       !result.success &&

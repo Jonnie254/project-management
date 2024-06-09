@@ -12,10 +12,12 @@ import myProjectRouter from "./router/myProject.router";
 
 dotenv.config();
 const app = express();
-const allowedOrigin = "http://127.0.0.1:5501";
+const localhost = "http://127.0.0.1:";
+// allow 5500 as well
+const allowedOrigins = [`${localhost}5500`, `${localhost}5001`];
 app.use(
   cors({
-    origin: allowedOrigin,
+    origin: allowedOrigins,
     credentials: true, // Allow credentials (cookies) to be sent
   })
 );
