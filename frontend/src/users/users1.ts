@@ -118,6 +118,13 @@ if (formRegister) {
 
     // Register user
     try {
+      console.log(
+        "Registering user",
+        nameRegister,
+        emailRegister,
+        passwordRegister
+      );
+
       const response = await fetch("http://localhost:3002/auth/register", {
         method: "POST",
         headers: {
@@ -215,6 +222,7 @@ if (formLogin) {
       const result = await response.json();
 
       if (result.success) {
+        localStorage.setItem("token", result.data.token);
         openPopUp(
           "Success",
           "Login successful",
@@ -222,7 +230,11 @@ if (formLogin) {
           "icon-success"
         );
         setTimeout(() => {
-          window.location.href = "user.dashboard.html";
+          if (result.data.role === "admin") {
+            window.location.href = "admin.dashboard.html";
+          } else {
+            window.location.href = "user.dashboard.html";
+          }
         }, 2000);
       } else {
         openPopUp(

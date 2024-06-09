@@ -8,7 +8,7 @@ export const verifyAdmin = async (
   next: NextFunction
 ) => {
   try {
-    const token = req.cookies.token;
+    const token = req.cookies.token || req.headers["authorization"];
     const result = jwt.verify(token, process.env.JWT_SECRET as string);
     const id: string = (result as any).id;
 
@@ -22,9 +22,11 @@ export const verifyAdmin = async (
       });
     }
     if (userResponse.data.role !== "admin") {
-      return res
-        .status(401)
-        .json({ success: false, message: "Access denied", data: null });
+      return res.status(401).json({
+        success: false,
+        message: "Access denied. You do not have sufficient privileges.",
+        data: null,
+      });
     }
     next();
   } catch (error) {
