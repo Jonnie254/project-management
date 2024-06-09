@@ -12,8 +12,14 @@ import myProjectRouter from "./router/myProject.router";
 
 dotenv.config();
 const app = express();
+const allowedOrigin = "http://127.0.0.1:5501";
+app.use(
+  cors({
+    origin: allowedOrigin,
+    credentials: true, // Allow credentials (cookies) to be sent
+  })
+);
 app.use(json());
-app.use(cors());
 app.use(cookieParser());
 
 app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
@@ -35,7 +41,7 @@ app.use("/my-project", verifyToken, myProjectRouter);
 
 app.use(noResource);
 
-const port = 5203;
+const port = 3002;
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

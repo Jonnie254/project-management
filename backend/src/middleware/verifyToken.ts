@@ -6,8 +6,7 @@ export const verifyToken = (
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.cookies.token;
-
+  const token = req.cookies.token || req.headers["authorization"];
   if (!token) {
     return res
       .status(401)

@@ -3,7 +3,7 @@ interface Project {
   name: string;
   description: string;
   end_date: string;
-  assigned_user: string;
+  user_id: string;
 }
 
 interface User {
@@ -30,14 +30,31 @@ const endDateInput = document.querySelector(
   "#endDateInput"
 ) as HTMLInputElement;
 
-const fetchUsers = async () => {
+const fetchUnassignedUsers = async () => {
   try {
-    const response = await fetch("http://localhost:5203/users/all");
-    if (response.ok) {
-      const data = await response.json();
-      console.log(data);
+    const token = localStorage.getItem("token");
 
-      return data;
+    const response = await fetch("http://localhost:3002/users/unassigned", {
+      method: "GET",
+      headers: {
+        Authorization: `${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    const result = await response.json();
+    console.log(result);
+
+    if (result.success) {
+      console.log(result.data);
+
+      return result.data;
+    } else if (
+      !result.success &&
+      result.message === "Access denied. You do not have sufficient privileges."
+    ) {
+      window.location.href = "user.dashboard.html";
+    } else if (!result.success && result.message === "Invalid token") {
+      window.location.href = "login.html";
     } else {
       console.error("Error fetching users:", response.statusText);
       return [];
@@ -51,32 +68,38 @@ const fetchUsers = async () => {
 // Create a project
 const addProject = async (newProject: Project): Promise<void> => {
   try {
-    const response = await fetch("http://localhost:5203/projects/create", {
+    const token = localStorage.getItem("token");
+    const response = await fetch("http://localhost:3002/projects/create", {
       method: "POST",
       headers: {
+        Authorization: `${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(newProject),
     });
 
     if (response.ok) {
-      const data = await response.json();
-      projects.push(data);
-      return data.message;
+      const project = await response.json();
+      projects.push(project);
     } else {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "Failed to add project");
+      throw new Error("Failed to add project");
     }
   } catch (error) {
     console.error("Error adding project:", error);
-    throw error;
   }
 };
 
 // Fetch projects from the server
 const fetchProjects = async (): Promise<Project[]> => {
   try {
-    const response = await fetch("http://localhost:5203/projects");
+    const token = localStorage.getItem("token");
+    const response = await fetch("http://localhost:3002/projects/all", {
+      method: "GET",
+      headers: {
+        Authorization: `${token}`,
+        "Content-Type": "application/json",
+      },
+    });
     const data = await response.json();
     return data;
   } catch (error) {
@@ -88,10 +111,12 @@ const fetchProjects = async (): Promise<Project[]> => {
 // Delete project
 const deleteProject = async (id: string): Promise<void> => {
   try {
-    const response = await fetch(`http://localhost:5203/projects/${id}`, {
+    const token = localStorage.getItem("token");
+    const response = await fetch(`http://localhost:3002/projects/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `${token}`,
       },
     });
 
@@ -108,14 +133,14 @@ const deleteProject = async (id: string): Promise<void> => {
 // Show confirmation modal
 const showDeleteConfirmation = (projectId: string) => {
   modalOverlay.innerHTML = `
-        <div class="modal-content">
-            <div class="modalItems">
-                <p>Are you sure you want to delete this project?</p>
-                <button id="confirmDelete">Yes</button>
-                <button id="cancelDelete">No</button>
-            </div>
-        </div>
-    `;
+          <div class="modal-content">
+              <div class="modalItems">
+                  <p>Are you sure you want to delete this project?</p>
+                  <button id="confirmDelete">Yes</button>
+                  <button id="cancelDelete">No</button>
+              </div>
+          </div>
+      `;
   modalOverlay.style.display = "block";
 
   const confirmDeleteBtn = document.querySelector(
@@ -137,8 +162,6 @@ const showDeleteConfirmation = (projectId: string) => {
   cancelDeleteBtn.addEventListener("click", () => {
     modalOverlay.style.display = "none";
   });
-
-  renderProjects();
 };
 
 // Update project
@@ -146,33 +169,27 @@ const updateProject = async (
   id: string,
   updatedFields: Partial<Project>
 ): Promise<void> => {
-  try {
-    const response = await fetch(`http://localhost:3002/projects/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(updatedFields),
-    });
+  const token = localStorage.getItem("token");
+  const response = await fetch(`http://localhost:3002/projects/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `${token}`,
+    },
+    body: JSON.stringify(updatedFields),
+  });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(
-        errorData.message || `Failed to update project with id ${id}`
-      );
-    }
-    const data = await response.json();
-    const index = projects.findIndex((project) => project.id === id);
+  if (!response.ok) {
+    throw new Error(`Failed to update project with id ${id}`);
+  }
 
-    if (index !== -1) {
-      projects[index] = { ...projects[index], ...updatedFields };
-    }
-    return data.message;
-  } catch (error) {
-    console.error("Error updating project:", error);
-    throw error;
+  const index = projects.findIndex((project) => project.id === id);
+
+  if (index !== -1) {
+    projects[index] = { ...projects[index], ...updatedFields };
   }
 };
+
 // Populate the assign user dropdown with fetched users
 const populateUsersDropdown = async () => {
   try {
@@ -180,8 +197,7 @@ const populateUsersDropdown = async () => {
       "#assignUser"
     ) as HTMLSelectElement;
 
-    let response = await fetchUsers();
-    let users = response.data; // Accessing response.data to get the array of users
+    let users = await fetchUnassignedUsers();
 
     console.log(users);
 
@@ -190,10 +206,6 @@ const populateUsersDropdown = async () => {
       const option = document.createElement("option");
       option.value = user.id;
       option.textContent = user.name;
-      if (user.id === "edc25393-97f2-416f-9257-32be44176c68") {
-        // Example user ID for selection
-        option.selected = true;
-      }
       assignUserInput.appendChild(option);
     });
   } catch (error) {
@@ -352,7 +364,7 @@ projectForm.addEventListener("submit", async (event) => {
         name: nameValue,
         description: descriptionValue,
         end_date: endDateValue,
-        assigned_user: assignedUserValue,
+        user_id: assignedUserValue,
       };
 
       try {
@@ -376,7 +388,6 @@ projectForm.addEventListener("submit", async (event) => {
       setTimeout(() => {
         successMessage.textContent = "";
         modalOverlay.style.display = "none";
-        renderProjects();
       }, 2000);
     }
   });
@@ -387,179 +398,17 @@ createIcon.addEventListener("click", () => {
   renderProjectFormModal();
 });
 
-// Render the dashboard section
-const renderDashboard = () => {
-  mainBody.innerHTML = `
-    
-    <div class="dashboard-wrapper">
-      <div class="card1">
-        <ion-icon name="card-outline" class="card-icon"></ion-icon>
-        <p>Projects</p>
-        <h2>${projects.length}</h2>
-      </div>
-      <div class="card2">
-        <ion-icon name="people-outline" class="card-icon"></ion-icon>
-        <p>Users</p>
-        <h2>${users.length}</h2>
-      </div>
-      <div class="card3">
-        <ion-icon name="timer-outline" class="card-icon"></ion-icon>
-        <p>Time Spent</p>
-        <h2>20HRS</h2>
-      
-    </div>
-   
-     <div class="analytics">
-    
-    </div>
-    </div>
-   
-    
-    
-    
-    `;
-};
-
-//Render the projects section
-const renderProjects = async () => {
-    projects = await fetchProjects();
-    mainBody.innerHTML = "";
-
-    const table = document.createElement("table");
-    table.className = "displayTable";
-
-    const headerRow = document.createElement("tr");
-    ["Name", "Description", "User", "End Date", "Actions"].forEach((header) => {
-        const th = document.createElement("th");
-        th.textContent = header;
-        headerRow.appendChild(th);
-    });
-
-    table.appendChild(headerRow);
-
-    //projects.forEach((project: Project) => {
-        const row = document.createElement("tr") as HTMLTableRowElement;
-
-        row.innerHTML = `
-            <td>{project.name}</td>
-            <td>{project.description}</td>
-            <td>{project.assigned_user}</td>
-            <td>{project.end_date}</td>
-            <td>
-                <div class="actions">
-                    <ion-icon name="create-outline" class="editBtn" data-id="{project.id}"></ion-icon>
-                    <ion-icon name="trash-outline" class="deleteBtn" data-id="{project.id}"></ion-icon>
-                </div>
-            </td>
-        `;
-        table.appendChild(row);
-    //});
-
-    mainBody.appendChild(table);
-
-    // Add event listeners for edit and delete buttons
-    const editButtons = document.querySelectorAll(".editBtn") as NodeListOf<HTMLButtonElement>;
-    const deleteButtons = document.querySelectorAll(".deleteBtn") as NodeListOf<HTMLButtonElement>;
-
-    editButtons.forEach((editButton) => {
-        editButton.addEventListener("click", () => {
-            const id = editButton.dataset.id;
-            const project = projects.find((proj) => proj.id === id);
-            if (project) {
-              
-                renderProjectFormModal(project);
-            }
-        });
-    });
-
-    deleteButtons.forEach((deleteButton) => {
-        deleteButton.addEventListener("click", async () => {
-            const id = deleteButton.dataset.id;
-            if (id) {
-                try {
-                    showDeleteConfirmation(id);
-                    await deleteProject(id);
-                    // Re-render projects after deletion
-                    await renderProjects();
-                } catch (error) {
-                    console.error("Error deleting project:", error);
-                }
-            }
-        });
-    });
-};
-
-// Render the users section
-const renderUsers = async () => {
-  users = await fetchUsers();
-
-  mainBody.innerHTML = " ";
-
-  const table = document.createElement("table") as HTMLTableElement;
-  table.className = "displayTable";
-
-  const headerRow = document.createElement("tr");
-  ["Name", "Email"].forEach((header) => {
-    const th = document.createElement("th");
-    th.textContent = header;
-    headerRow.appendChild(th);
-  });
-
-  table.appendChild(headerRow);
-  users.forEach((user) => {
-    const row = document.createElement("tr") as HTMLTableRowElement;
-    row.innerHTML = `
-     
-     <td>${user.name}</td>
-      <td>${user.email}</td>
-  
-     `;
-    table.appendChild(row);
-  });
-  mainBody.appendChild(table);
-};
-
-//logout
-const logout = async () => {
-  window.location.href = "/frontend/html/login.html";
-};
-/// Event listeners for sidebar links
-const links = document.querySelectorAll(".links ul li");
-links.forEach((li) => {
-  const link = li.querySelector("a");
-  const icon = li.querySelector("ion-icon");
-
-  const clickHandler = (event: Event) => {
-    event.preventDefault();
-    const target = (event.currentTarget as HTMLElement).dataset.target;
-    switch (target) {
-      case "dashboard":
-        renderDashboard();
-        break;
-      case "projects":
-        renderProjects();
-        break;
-      case "users":
-        renderUsers();
-        break;
-      case "logout":
-        logout();
-        break;
-      default:
-        setTimeout(() => {
-          renderDashboard();
-        }, 1000);
-        break;
-    }
-  };
-
-  if (link) {
-    link.addEventListener("click", clickHandler);
-  }
-  if (icon) {
-    icon.addEventListener("click", clickHandler);
+// Event listener for the project link
+projectLink.addEventListener("click", async () => {
+  try {
+    const allProjects = await fetchProjects();
+    console.log(allProjects);
+  } catch (error) {
+    console.error("Error fetching projects:", error);
   }
 });
 
-// Set default content to Dashboard on page load
-renderDashboard();
+// Event listener for the back icon
+backIcon.addEventListener("click", () => {
+  console.log("Back icon clicked");
+});
