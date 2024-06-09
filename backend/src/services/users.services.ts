@@ -1,10 +1,10 @@
 import mssql from "mssql";
 import { User } from "../interfaces/user";
-import { UserService } from "../interfaces/user_service";
+import { UsersService } from "../interfaces/users_service";
 import { Res } from "../interfaces/res";
 import Connection from "../helpers/dbhelper";
 
-export class UserServices implements UserService {
+export class UsersServices implements UsersService {
   async getUser(id: string): Promise<Res> {
     try {
       const response = (await Connection.execute("get_user", { id: id }))

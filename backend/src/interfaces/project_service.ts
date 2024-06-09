@@ -7,5 +7,4 @@ export interface ProjectService {
   deleteProject(id: string): Promise<Res>;
   getProject(id: string): Promise<Res>;
   getProjects(): Promise<Res>;
-  getMyProject(user_id: string): Promise<Res>;
 }

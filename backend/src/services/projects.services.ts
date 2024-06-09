@@ -211,31 +211,4 @@ export class projectServices implements ProjectService {
       };
     }
   }
-
-  async getMyProject(user_id: string): Promise<Res> {
-    try {
-      let response = (
-        await Connection.execute("get_my_project", { user_id: user_id })
-      ).recordset;
-
-      if (response.length < 1) {
-        return {
-          success: true,
-          message: "No project available",
-          data: null,
-        };
-      }
-      return {
-        success: true,
-        message: "Project found",
-        data: response,
-      };
-    } catch (error) {
-      return {
-        success: false,
-        message: "An error occurred",
-        data: null,
-      };
-    }
-  }
 }
