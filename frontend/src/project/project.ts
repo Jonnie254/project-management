@@ -430,23 +430,23 @@ const renderProjects = async () => {
 
     table.appendChild(headerRow);
 
-    //projects.forEach((project: Project) => {
+    projects.forEach((project: Project) => {
         const row = document.createElement("tr") as HTMLTableRowElement;
 
         row.innerHTML = `
-            <td>{project.name}</td>
-            <td>{project.description}</td>
-            <td>{project.assigned_user}</td>
-            <td>{project.end_date}</td>
+            <td>${project.name}</td>
+            <td>${project.description}</td>
+            <td>${project.assigned_user}</td>
+            <td>${project.end_date}</td>
             <td>
                 <div class="actions">
-                    <ion-icon name="create-outline" class="editBtn" data-id="{project.id}"></ion-icon>
-                    <ion-icon name="trash-outline" class="deleteBtn" data-id="{project.id}"></ion-icon>
+                    <ion-icon name="create-outline" class="editBtn" data-id="${project.id}"></ion-icon>
+                    <ion-icon name="trash-outline" class="deleteBtn" data-id="${project.id}"></ion-icon>
                 </div>
             </td>
         `;
         table.appendChild(row);
-    //});
+    });
 
     mainBody.appendChild(table);
 
