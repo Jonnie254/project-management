@@ -30,8 +30,9 @@ body {
   justify-content: space-around;
 }
 .sideBar-header h1 {
+  text-align: center;
   padding-top: 15px;
-  font-size: 35px;
+  font-size: 40px;
   color: antiquewhite;
 }
 .back-icon {
@@ -41,8 +42,8 @@ body {
 .create-items {
   cursor: pointer;
   background-color: rgb(241, 234, 226);
-  padding: 2px;
-  margin: 40px 0px;
+  padding: 5px;
+ margin: 30px 0px;
   border-radius: 20px;
   display: flex;
   gap: 2px;
@@ -77,7 +78,7 @@ body {
   display: none;
 }
 .card-icon {
-  font-size: 40px;
+  font-size: 50px;
 }
 .link-icon {
   font-size: 30px;
@@ -90,15 +91,16 @@ body {
   align-items: center;
 }
 .links ul li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   border-radius: 10px;
   padding: 5px 10px;
   list-style: none;
   margin-bottom: 40px;
 }
 .links ul li a {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+
   text-decoration: none;
   color: #fff;
 }
@@ -130,8 +132,8 @@ body {
 
 .searchForm {
  
-  /* //padding: 5px 10px; */
-  min-width:200px;
+  padding: 5px 10px;
+  min-width:30%;
   border-radius: 10px;
   background-color: #fff;
   
@@ -155,17 +157,15 @@ body {
 
 /* Dropdown button styling */
 .dropdown-btn {
-    background-color: #1d1d1d;
-  color:#fff;
+    
+  color:#313131;
   padding: 10px 15px;
   font-size: 16px;
   border: none;
   cursor: pointer;
 }
 
-.dropdown-btn:hover {
-  background-color: #444;
-}
+
 
 /* Dropdown content styling */
 .dropdown-content {
@@ -209,9 +209,8 @@ select:focus {
 }
 
 .main-body {
-  margin: 30px auto;
+  margin:30px auto;
   width: 85%;
-
 }
 .dashboard-wrapper {
  height: 75vh;
@@ -270,7 +269,6 @@ select:focus {
   position: absolute;
   top: 50%;
   left: 50%;
-  min-width: 400px;
   padding: 20px;
   transform: translate(-50%, -50%); /* Center the modal */
   background: rgb(245, 247, 246);
@@ -337,9 +335,10 @@ label {
   font-family: arial, sans-serif;
   border-collapse: collapse;
   border-radius: 10px;
+
 }
 #confirmDelete,#cancelDelete{
-background-color: slateblue;
+background-color: rgb(112, 91, 250);
 color: #fff;
 padding:.5rem 2rem;
 cursor: pointer;
@@ -348,7 +347,7 @@ border-radius: 10px;
 margin-top: 20px;
 }
 #cancelDelete{
-  background-color:rgb(219, 1, 1);
+  background-color:rgba(253, 61, 61, 0.889);
  
 }
 th {
@@ -375,11 +374,14 @@ th {
 .deleteBtn {
   color: rgb(219, 1, 1);
 }
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 678px) {
   .sideBar-header h1 {
     display: none;
   }
   .create-items p {
+    display: none;
+  }
+  .links ul li a{
     display: none;
   }
   .back-icon {
@@ -389,5 +391,21 @@ th {
   .menu-icon {
     display: block;
   }
+  .main-body{
+   
+    width: 100%;
+  }
   
+}
+@media screen  and (max-width:500px){
+
+.main-body{
+  margin:0;
+}
+  .dashboard-wrapper{
+  
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+  }
 }

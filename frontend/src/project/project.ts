@@ -306,45 +306,47 @@ const renderProjectFormModal = (project?: Project) => {
   populateUsersDropdown();
 
   // Handle form submission
-  projectForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
+projectForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
 
-    const nameValue = nameInput.value.trim();
-    const descriptionValue = descriptionInput.value.trim();
-    const endDateValue = endDateInput.value.trim();
-    const assignedUserValue = assignUserSelect.value;
+  const nameValue = nameInput.value.trim();
+  const descriptionValue = descriptionInput.value.trim();
+  const endDateValue = endDateInput.value.trim();
+  const assignedUserValue = assignUserSelect.value;
 
-    // Validate form data
-    let isValid = true;
+  // Validate form data
+  let isValid = true;
 
-    if (!nameValue) {
+  if (!nameValue) {
       nameError.textContent = "Name is required";
       isValid = false;
-    } else {
+  } else {
       nameError.textContent = "";
-    }
+  }
 
-    if (!descriptionValue) {
+  if (!descriptionValue) {
       descriptionError.textContent = "Description is required";
       isValid = false;
-    } else {
+  } else {
       descriptionError.textContent = "";
-    }
+  }
 
-    if (!endDateValue) {
+  if (!endDateValue) {
       endDateError.textContent = "End date is required";
       isValid = false;
-    } else {
+  } else if (new Date(endDateValue) < new Date()) { // Check if end date is before current date
+      endDateError.textContent = "End date cannot be before the current date";
+      isValid = false;
+  } else {
       endDateError.textContent = "";
-    }
+  }
 
-    if (!assignedUserValue) {
+  if (!assignedUserValue) {
       assignUserError.textContent = "User assignment is required";
       isValid = false;
-    } else {
+  } else {
       assignUserError.textContent = "";
-    }
-
+  }
     if (isValid) {
       const newProject: Project = {
         name: nameValue,
@@ -435,23 +437,23 @@ const renderProjects = async () => {
 
     table.appendChild(headerRow);
 
-    projects.forEach((project: Project) => {
+    //projects.forEach((project: Project) => {
         const row = document.createElement("tr") as HTMLTableRowElement;
 
         row.innerHTML = `
-            <td>${project.name}</td>
-            <td>${project.description}</td>
-            <td>${project.assigned_user}</td>
-            <td>${project.end_date}</td>
+            <td>{project.name}</td>
+            <td>{project.description}</td>
+            <td>{project.assigned_user}</td>
+            <td>{project.end_date}</td>
             <td>
                 <div class="actions">
-                    <ion-icon name="create-outline" class="editBtn" data-id="${project.id}"></ion-icon>
-                    <ion-icon name="trash-outline" class="deleteBtn" data-id="${project.id}"></ion-icon>
+                    <ion-icon name="create-outline" class="editBtn" data-id="{project.id}"></ion-icon>
+                    <ion-icon name="trash-outline" class="deleteBtn" data-id="{project.id}"></ion-icon>
                 </div>
             </td>
         `;
         table.appendChild(row);
-    });
+    //});
 
     mainBody.appendChild(table);
 
@@ -464,6 +466,7 @@ const renderProjects = async () => {
             const id = editButton.dataset.id;
             const project = projects.find((proj) => proj.id === id);
             if (project) {
+              
                 renderProjectFormModal(project);
             }
         });
@@ -520,45 +523,43 @@ const renderUsers = async () => {
 const logout = async () => {
   window.location.href = "/frontend/html/login.html";
 };
-// Event listeners for sidebar links
-const links = document.querySelectorAll(".links a");
-links.forEach((link) => {
-  link.addEventListener("click", (event) => {
+/// Event listeners for sidebar links
+const links = document.querySelectorAll(".links ul li");
+links.forEach((li) => {
+  const link = li.querySelector("a");
+  const icon = li.querySelector("ion-icon");
+
+  const clickHandler = (event: Event) => {
     event.preventDefault();
     const target = (event.currentTarget as HTMLElement).dataset.target;
     switch (target) {
       case "dashboard":
         renderDashboard();
-
         break;
       case "projects":
         renderProjects();
-
         break;
       case "users":
         renderUsers();
-
         break;
-
       case "logout":
         logout();
-
         break;
-
       default:
         setTimeout(() => {
           renderDashboard();
         }, 1000);
-
         break;
     }
-  });
+  };
+
+  if (link) {
+    link.addEventListener("click", clickHandler);
+  }
+  if (icon) {
+    icon.addEventListener("click", clickHandler);
+  }
 });
 
 // Set default content to Dashboard on page load
 renderDashboard();
-
-// Event listener for the back icon
-backIcon.addEventListener("click", () => {
-  console.log("Back icon clicked");
-});
