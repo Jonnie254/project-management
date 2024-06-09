@@ -1,18 +1,21 @@
-POST http://localhost:3002/auth/register
+
+##register user
+POST http://localhost:5203/auth/register
 Content-Type: application/json
 
 
 {
-    "name":"Melissa Doe",
-    "email":"mel@gmail.com",
-    "password":"123"
+    "name":"Ronny Doe",
+    "email":"ronny@yopmail.com",
+    "password":"1234"
 }
 
-#####
-GET http://localhost:3002/auth/login
+###login user
+GET http://localhost:5203/auth/login
 Content-Type: application/json
 
 {
-    "email":"mel@gmail.com",
+    "email":"mel@yopmail.com",
     "password":"123"
 }
+

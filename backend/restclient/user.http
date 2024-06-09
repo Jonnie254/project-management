@@ -1,6 +1,9 @@
-GET http://localhost:3002/users/all
+###get all users
+
+GET http://localhost:5203/users/all
 Content-Type: application/json
 
 ###getSingle user by id
-GET http://localhost:3002/users/user001
+GET http://localhost:5203/users/c4e2cc48-73ab-4a60-96fc-63f15cb16020
 Content-Type: application/json
+
