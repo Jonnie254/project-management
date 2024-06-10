@@ -14,7 +14,7 @@ export const register = async (req: Request, res: Response) => {
     return res.status(400).json(response);
   }
   // sendEmail(user.email);
-  res.cookie("token", response.data, {
+  res.cookie("token", response.data.token, {
     httpOnly: true,
   });
   return res.status(200).json(response);
@@ -27,7 +27,7 @@ export const login = async (req: Request, res: Response) => {
   if (!response.success) {
     return res.status(401).json(response);
   }
-  res.cookie("token", response.data, {
+  res.cookie("token", response.data.token, {
     httpOnly: true,
   });
   return res.status(200).json(response);

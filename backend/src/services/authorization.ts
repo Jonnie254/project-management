@@ -32,7 +32,11 @@ export class Authorization implements Auth {
           data: null,
         };
       }
-      let { password, ...rest } = user[0];
+
+      let rest = {
+        id: user[0].id,
+      };
+
       const token = jwt.sign(rest, process.env.JWT_SECRET as string, {
         expiresIn: "15m",
       });
@@ -70,7 +74,9 @@ export class Authorization implements Auth {
           data: null,
         };
       }
-      let { password, ...rest } = user;
+      let rest = {
+        id: user.id,
+      };
 
       const token = jwt.sign(rest, process.env.JWT_SECRET as string, {
         expiresIn: "15m",

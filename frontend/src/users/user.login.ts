@@ -47,6 +47,12 @@ function displayError(
   if (element) {
     element.style.display = show ? "block" : "none";
     element.textContent = show ? message : "";
+    if (show) {
+      setTimeout(() => {
+        element.style.display = "none";
+        element.textContent = "";
+      }, 3000);
+    }
   }
 }
 
@@ -74,12 +80,12 @@ const openPopUp = (
   popUpTitle.textContent = title;
   popUpMessage.textContent = message;
   popUpIcon.setAttribute("name", iconName);
-  popUpIcon.className = `tick ${iconClass}`; // Update the class for color
+  popUpIcon.className = `tick ${iconClass}`;
 
   popUp.classList.add("show");
   setTimeout(() => {
     popUp.classList.remove("show");
-  }, 2000);
+  }, 3000);
 };
 
 if (formRegister) {
@@ -146,6 +152,7 @@ if (formRegister) {
       });
 
       const result = await response.json();
+      console.log(result);
 
       if (result.success) {
         openPopUp(
@@ -201,17 +208,18 @@ if (formLogin) {
     ).value;
 
     // Reset error messages
-    displayError("email-error", false);
-    displayError("password-error", false);
+
+    displayError("email-login-error", false);
+    displayError("password-login-error", false);
 
     // Validate form inputs
     if (!validateEmail(emailLogin)) {
-      displayError("email-error", true, "Invalid email format");
+      displayError("email-login-error", true, "Invalid email format");
       return;
     }
 
     if (!validatePassword(passwordLogin)) {
-      displayError("password-error", true, "Password is required");
+      displayError("password-login-error", true, "Password is required");
       return;
     }
 
@@ -228,6 +236,7 @@ if (formLogin) {
         }),
       });
       const result = await response.json();
+      console.log(result);
 
       if (result.success) {
         localStorage.setItem("token", result.data.token);

@@ -5,17 +5,19 @@ import cookieParser from "cookie-parser";
 
 import authRouter from "./router/auth.router";
 import projectRouter from "./router/project.router";
-import userRouter from "./router/user.router";
+import usersRouter from "./router/users.router";
 import { verifyToken } from "./middleware/verifyToken";
 import { verifyAdmin } from "./middleware/verifyAdmin";
-import myProjectRouter from "./router/myProject.router";
+import userRouter from "./router/user.router";
 
 dotenv.config();
 const app = express();
-const allowedOrigin = "http://127.0.0.1:5500";
+const localhost = "http://127.0.0.1:";
+// allow 5500 as well
+const allowedOrigins = [`${localhost}5500`, `${localhost}5001`];
 app.use(
   cors({
-    origin: allowedOrigin,
+    origin: allowedOrigins,
     credentials: true, // Allow credentials (cookies) to be sent
   })
 );
@@ -36,8 +38,8 @@ const noResource = (req: Request, res: Response) => {
 
 app.use("/auth", authRouter);
 app.use("/projects", verifyToken, verifyAdmin, projectRouter);
-app.use("/users", verifyToken, verifyAdmin, userRouter);
-app.use("/my-project", verifyToken, myProjectRouter);
+app.use("/users", verifyToken, verifyAdmin, usersRouter);
+app.use("/user", verifyToken, userRouter);
 
 app.use(noResource);
 

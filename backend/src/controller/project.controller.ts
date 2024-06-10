@@ -60,20 +60,3 @@ export const getProjects = async (req: Request, res: Response) => {
   }
   return res.status(200).json(response);
 };
-
-export const getMyProject = async (req: Request, res: Response) => {
-  const user_id = getIDFromToken(req);
-  if (!user_id) {
-    return res.status(400).json({
-      success: false,
-      message: "Invalid token",
-      data: null,
-    });
-  }
-  const projects = new projectServices();
-  const response = await projects.getMyProject(user_id);
-  if (!response.success) {
-    return res.status(400).json(response);
-  }
-  return res.status(200).json(response);
-};

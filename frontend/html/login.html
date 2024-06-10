@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link rel="stylesheet" href="/frontend/css/index.css">
+    <link rel="stylesheet" href="../css/login.register.css">
     <title>Project Management</title>
 </head>
 
@@ -44,9 +44,9 @@
                 </div>
                 <span>or use your email for login</span>
                 <input type="email" id="email-login" placeholder="Email">
-                <div id="email-error" class="error-message"></div>
+                <div id="email-login-error" class="error-message"></div>
                 <input type="password" id="password-login" placeholder="Password">
-                <div id="password-error" class="error-message"></div>
+                <div id="password-login-error" class="error-message"></div>
                 <a href="#">Forgot Your Password?</a>
                 <button type="submit">Sign In</button>
             </form>
@@ -66,14 +66,12 @@
             </div>
         </div>
     </div>
-
     <div id="pop-up" class="pop-up">
         <h1 id="popup-title"></h1>
         <p id="popup-message"></p>
         <i id="popup-icon"></i>
     </div>
-
-    <script src="/frontend/dist/users/users1.js"></script>
+    <script src="/frontend/dist/users/user.login.js"></script>
 </body>
 
 </html>
