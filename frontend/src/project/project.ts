@@ -53,6 +53,7 @@ const fetchDetails = async (): Promise<boolean> => {
       }
       return true;
     } else {
+      handleFetchError(result.message);
       return false;
     }
   } catch (error) {
@@ -95,8 +96,6 @@ const fetchUsers = async (): Promise<User[]> => {
       },
     });
     const result = await response.json();
-    console.log(result);
-
     if (result.success) {
       return result.data;
     } else {
@@ -155,10 +154,8 @@ const fetchProjects = async (): Promise<Project[]> => {
     });
     const projects = await response.json();
     const result = projects.data;
-    console.log(result);
     return result;
   } catch (error) {
-    console.error("Error fetching projects:", error);
     return [];
   }
 };

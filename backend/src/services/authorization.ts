@@ -24,8 +24,8 @@ export class Authorization implements Auth {
         };
       }
       let hashed_password = user[0].password;
-      let PasswordMatch = bcrypt.compareSync(login.password, hashed_password);
-      if (!PasswordMatch) {
+      let passwordsMatch = bcrypt.compareSync(login.password, hashed_password);
+      if (!passwordsMatch) {
         return {
           success: false,
           message: "Invalid email or password",
@@ -140,11 +140,10 @@ export class Authorization implements Auth {
   ): Promise<Res> {
     try {
       let user = (
-        await Connection.execute("get_user", {
+        await Connection.execute("get_password", {
           id: id,
         })
       ).recordset;
-
       if (user.length < 1) {
         return {
           success: false,
@@ -152,39 +151,34 @@ export class Authorization implements Auth {
           data: null,
         };
       }
-      let PasswordMatch = bcrypt.compareSync(oldPassword, user[0].password);
-
-      if (!PasswordMatch) {
+      let passwordsMatch = bcrypt.compareSync(oldPassword, user[0].password);
+      if (!passwordsMatch) {
         return {
           success: false,
           message: "Invalid password",
           data: null,
         };
       }
-
       let hashed_password = bcrypt.hashSync(password, 6);
-
       let results = (
         await Connection.execute("update_password", {
           id: id,
           password: hashed_password,
         })
       ).rowsAffected;
-
-      if ((results[0] = 1)) {
-        return {
-          success: true,
-          message: "Password updated",
-          data: null,
-        };
-      } else {
+      if (results[0] < 1) {
         return {
           success: false,
           message: "Failed to update password",
           data: null,
         };
       }
-    } catch (error) {
+      return {
+        success: true,
+        message: "Password updated",
+        data: null,
+      };
+    } catch (error: any) {
       return {
         success: false,
         message: "An error occurred",

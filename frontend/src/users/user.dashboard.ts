@@ -221,8 +221,6 @@ changePasswordForm.addEventListener("submit", async (event) => {
       }),
     });
     const result = await response.json();
-    console.log(result);
-
     if (result.success) {
       displayChangePasswordError("change-password-error", false);
       currentPasswordInput.value = "";
@@ -261,8 +259,9 @@ settingsForm.addEventListener("submit", async (event) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        name: newname,
+        id: userDetails.id,
         email: newemail,
+        name: newname,
       }),
     });
     const result = await response.json();
