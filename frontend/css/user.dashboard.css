@@ -296,6 +296,27 @@ label {
   border-radius: 5px;
   margin-top: 20px;
 }
+#pop-up {
+  visibility: hidden;
+  opacity: 0;
+  position: fixed;
+  top: 10%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #c9d6ff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: visibility 0.3s, opacity 0.3s, transform 0.3s;
+}
+
+#pop-up.show {
+  visibility: visible;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  z-index: 1000;
+}
 /* Table style */
 .assignedProjectTable {
   font-family: arial, sans-serif;
