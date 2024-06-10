@@ -70,6 +70,9 @@ const fetchUserDetails = async (): Promise<boolean> => {
     if (!result.success && result.message === "Invalid token") {
       window.location.href = "login.html";
     }
+    if (!result.success) {
+      return false;
+    }
     userDetails = result.data;
     if (profileTextDiv.firstElementChild) {
       profileTextDiv.firstElementChild.textContent = userDetails.name;
@@ -92,6 +95,7 @@ const fetchAssignedProject = async (): Promise<User[]> => {
       },
     });
     const data = await response.json();
+
     return data;
   } catch (error) {
     console.error("Error fetching projects:", error);
@@ -101,6 +105,9 @@ const fetchAssignedProject = async (): Promise<User[]> => {
 
 const showProfile = async () => {
   await fetchUserDetails();
+  if (!userDetails) {
+    return;
+  }
   const fullNameInput = document.querySelector(
     "#full-name"
   ) as HTMLInputElement;
