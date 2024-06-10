@@ -433,6 +433,8 @@ const renderProjectFormModal = (project?: Project): void => {
         description: descriptionValue,
         end_date: endDateValue,
         user_id: assignedUserValue,
+        created_at: "",
+        updated_at: "",
       };
 
       try {
