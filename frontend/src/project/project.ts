@@ -4,6 +4,8 @@ interface Project {
   description: string;
   end_date: string;
   user_id: string;
+  user_name?: string;
+  user_email?: string;
 }
 
 interface User {
@@ -15,6 +17,7 @@ interface User {
 // Arrays to store projects and users
 let projects: Project[] = [];
 let users: User[] = [];
+let user: User;
 
 // DOM elements
 const backIcon = document.querySelector(".back-icon") as HTMLButtonElement;
@@ -29,6 +32,35 @@ const descriptionInput = document.querySelector(
 const endDateInput = document.querySelector(
   "#endDateInput"
 ) as HTMLInputElement;
+
+const fetchDetails = async (): Promise<boolean> => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await fetch("http://localhost:3002/user/details", {
+      method: "GET",
+      headers: {
+        Authorization: `${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    const result = await response.json();
+    if (result.success) {
+      const userName = document.querySelector(
+        ".user-name"
+      ) as HTMLParagraphElement;
+      if (userName) {
+        userName.textContent = result.data.name;
+      }
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    return false;
+  }
+};
+fetchDetails();
 
 const fetchUnassignedUsers = async (): Promise<User[]> => {
   try {
@@ -480,6 +512,7 @@ const displayProjects = async (
         <td>${project.name}</td>
         <td>${project.description}</td>
         <td>${project.end_date}</td>
+        <td>${project.user_email}</td>
         <td>
             <div class="actions">
                 <ion-icon name="create-outline" class="editBtn" data-id="${project.id}"></ion-icon>
@@ -503,11 +536,13 @@ const renderProjects = async () => {
   table.className = "displayTable";
 
   const headerRow = document.createElement("tr");
-  ["Name", "Description", "End Date", "Actions"].forEach((header) => {
-    const th = document.createElement("th");
-    th.textContent = header;
-    headerRow.appendChild(th);
-  });
+  ["Name", "Description", "End Date", "Assigned User", "Actions"].forEach(
+    (header) => {
+      const th = document.createElement("th");
+      th.textContent = header;
+      headerRow.appendChild(th);
+    }
+  );
 
   table.appendChild(headerRow);
   displayProjects(table, tblResponsive);
