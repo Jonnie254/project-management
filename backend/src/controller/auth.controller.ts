@@ -3,6 +3,7 @@ import { User } from "../interfaces/user";
 import { Authorization } from "../services/authorization";
 import { v4 } from "uuid";
 import { user_login } from "../interfaces/user_login";
+import { user_details } from "../interfaces/user_details";
 // import { sendEmail } from "../background-services/mailer";
 
 export const register = async (req: Request, res: Response) => {
@@ -42,7 +43,7 @@ export const logout = async (req: Request, res: Response) => {
 
 export const updateDetails = async (req: Request, res: Response) => {
   const auth = new Authorization();
-  const user: User = req.body;
+  const user: user_details = req.body;
   const response = await auth.updateDetails(user);
   if (response.success) {
     return res.status(200).json(response);
@@ -53,8 +54,8 @@ export const updateDetails = async (req: Request, res: Response) => {
 
 export const updatePassword = async (req: Request, res: Response) => {
   const auth = new Authorization();
-  const { id, password, oldPassword } = req.body;
-  const response = await auth.updatePassword(id, password, oldPassword);
+  const { id, oldPassword, password } = req.body;
+  const response = await auth.updatePassword(id, oldPassword, password);
   if (response.success) {
     return res.status(200).json(response);
   } else {
