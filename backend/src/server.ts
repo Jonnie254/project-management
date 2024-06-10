@@ -13,12 +13,11 @@ import userRouter from "./router/user.router";
 dotenv.config();
 const app = express();
 const localhost = "http://127.0.0.1:";
-// allow 5500 as well
-const allowedOrigins = [`${localhost}5500`, `${localhost}5001`];
+const allowedOrigins = [`${localhost}5500`, `${localhost}5501`];
 app.use(
   cors({
     origin: allowedOrigins,
-    credentials: true, // Allow credentials (cookies) to be sent
+    credentials: true,
   })
 );
 app.use(json());

@@ -192,11 +192,7 @@ const populateUsersDropdown = async () => {
     let assignUserInput = document.querySelector(
       "#assignUser"
     ) as HTMLSelectElement;
-
     let users = await fetchUnassignedUsers();
-
-    console.log(users);
-
     assignUserInput.innerHTML = ""; // Clear existing options
     users.forEach((user: User) => {
       const option = document.createElement("option");
@@ -396,13 +392,8 @@ createIcon.addEventListener("click", () => {
 projectLink.addEventListener("click", async () => {
   try {
     const allProjects = await fetchProjects();
-    console.log(allProjects);
-  } catch (error) {
-    console.error("Error fetching projects:", error);
-  }
+  } catch (error) {}
 });
 
 // Event listener for the back icon
-backIcon.addEventListener("click", () => {
-  console.log("Back icon clicked");
-});
+backIcon.addEventListener("click", () => {});

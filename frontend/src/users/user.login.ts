@@ -9,12 +9,10 @@ const registerBtn = document.getElementById("register") as HTMLButtonElement;
 const loginBtn = document.getElementById("login") as HTMLButtonElement;
 
 registerBtn.addEventListener("click", () => {
-  console.log("Register button clicked");
   container.classList.add("active");
 });
 
 loginBtn.addEventListener("click", () => {
-  console.log("Login button clicked");
   container.classList.remove("active");
 });
 
@@ -91,7 +89,6 @@ const openPopUp = (
 if (formRegister) {
   formRegister.addEventListener("submit", async function (event: Event) {
     event.preventDefault();
-    console.log("Register form submitted");
 
     const nameRegister = (
       document.getElementById("name-register") as HTMLInputElement
@@ -150,10 +147,7 @@ if (formRegister) {
           password: passwordRegister,
         }),
       });
-
       const result = await response.json();
-      console.log(result);
-
       if (result.success) {
         openPopUp(
           "Thank you",
@@ -198,8 +192,6 @@ function navigateToLogin() {
 if (formLogin) {
   formLogin.addEventListener("submit", async function (event: Event) {
     event.preventDefault();
-    console.log("Login form submitted");
-
     const emailLogin = (
       document.getElementById("email-login") as HTMLInputElement
     ).value;
@@ -236,7 +228,6 @@ if (formLogin) {
         }),
       });
       const result = await response.json();
-      console.log(result);
 
       if (result.success) {
         localStorage.setItem("token", result.data.token);

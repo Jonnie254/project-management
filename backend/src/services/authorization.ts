@@ -32,11 +32,9 @@ export class Authorization implements Auth {
           data: null,
         };
       }
-
       let rest = {
         id: user[0].id,
       };
-
       const token = jwt.sign(rest, process.env.JWT_SECRET as string, {
         expiresIn: "15m",
       });
@@ -137,8 +135,8 @@ export class Authorization implements Auth {
 
   async updatePassword(
     id: string,
-    password: string,
-    oldPassword: string
+    oldPassword: string,
+    password: string
   ): Promise<Res> {
     try {
       let user = (

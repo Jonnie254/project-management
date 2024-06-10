@@ -7,8 +7,6 @@ export const verifyToken = (
   next: NextFunction
 ) => {
   const token = req.cookies.token || req.headers["authorization"];
-  console.log(token);
-
   if (!token) {
     return res
       .status(401)
@@ -18,8 +16,6 @@ export const verifyToken = (
     jwt.verify(token, process.env.JWT_SECRET as string);
     next();
   } catch (error: any) {
-    console.log(error.message);
-
     res.clearCookie("token");
     return res
       .status(400)

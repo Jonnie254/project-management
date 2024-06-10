@@ -1,3 +1,7 @@
+const profileTextDiv = document.querySelector(
+  ".profile-text"
+) as HTMLDivElement;
+
 interface User {
   id: string;
   name: string;
@@ -31,6 +35,7 @@ const profileSection = document.querySelector(".container") as HTMLDivElement;
 const profileButton = document.getElementById("profile-btn") as HTMLDivElement;
 profileButton.addEventListener("click", () => {
   profileSection.classList.add("show");
+  showProfile();
   manBody.classList.add("hide");
   projectSection.style.display = "none";
   dashboardButton.classList.remove("active");
@@ -54,8 +59,6 @@ projectSectionBtn.addEventListener("click", () => {
 const fetchUserDetails = async (): Promise<boolean> => {
   try {
     const token = localStorage.getItem("token");
-    console.log(token);
-
     const response = await fetch("http://localhost:3002/user/details", {
       method: "GET",
       headers: {
@@ -65,10 +68,12 @@ const fetchUserDetails = async (): Promise<boolean> => {
     });
     const result = await response.json();
     if (!result.success && result.message === "Invalid token") {
-      // window.location.href = "login.html";
+      window.location.href = "login.html";
     }
     userDetails = result.data;
-    console.log(result);
+    if (profileTextDiv.firstElementChild) {
+      profileTextDiv.firstElementChild.textContent = userDetails.name;
+    }
     return true;
   } catch (error) {
     console.error("Error fetching details:", error);
@@ -87,12 +92,21 @@ const fetchAssignedProject = async (): Promise<User[]> => {
       },
     });
     const data = await response.json();
-    console.log(data);
     return data;
   } catch (error) {
     console.error("Error fetching projects:", error);
     return [];
   }
+};
+
+const showProfile = async () => {
+  await fetchUserDetails();
+  const fullNameInput = document.querySelector(
+    "#full-name"
+  ) as HTMLInputElement;
+  const emailInput = document.querySelector("#email") as HTMLInputElement;
+  fullNameInput.defaultValue = userDetails.name;
+  emailInput.defaultValue = userDetails.email;
 };
 
 const settingsTab = document.getElementById("settings-tab") as HTMLDivElement;
@@ -193,7 +207,6 @@ changePasswordForm.addEventListener("submit", async (event) => {
     return;
   }
 
-  console.log(localStorage.getItem("token"));
   try {
     const response = await fetch("http://localhost:3002/auth/update-password", {
       method: "PUT",
@@ -202,12 +215,14 @@ changePasswordForm.addEventListener("submit", async (event) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        id: userDetails.id,
         oldPassword,
-        newPassword,
+        password: newPassword,
       }),
     });
     const result = await response.json();
     console.log(result);
+
     if (result.success) {
       displayChangePasswordError("change-password-error", false);
       currentPasswordInput.value = "";
