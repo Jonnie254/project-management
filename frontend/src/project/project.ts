@@ -59,6 +59,8 @@ const fetchUsers = async (): Promise<User[]> => {
       },
     });
     const result = await response.json();
+    console.log(result);
+    
     if (result.success) {
       return result.data;
     } else {
@@ -115,8 +117,11 @@ const fetchProjects = async (): Promise<Project[]> => {
         "Content-Type": "application/json",
       },
     });
-    const data = await response.json();
-    return data;
+    const projects = await response.json();
+    const result = projects.data
+    console.log(result);
+    return result;
+
   } catch (error) {
     console.error("Error fetching projects:", error);
     return [];
@@ -127,7 +132,7 @@ const fetchProjects = async (): Promise<Project[]> => {
 const deleteProject = async (id: string): Promise<void> => {
   try {
     const token = localStorage.getItem("token");
-    const response = await fetch(`http://localhost:3002/projects/${id}`, {
+    const response = await fetch(`http://localhost:3002/projects/delete/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -179,7 +184,7 @@ const showDeleteConfirmation = (projectId: string): void => {
 const updateProject = async (id: string, updatedFields: Partial<Project>): Promise<void> => {
   try {
     const token = localStorage.getItem("token");
-    const response = await fetch(`http://localhost:3002/projects/${id}`, {
+    const response = await fetch(`http://localhost:3002/projects/update/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -443,12 +448,14 @@ const renderDashboard = () => {
 const renderProjects = async () => {
   projects = await fetchProjects();
   mainBody.innerHTML = "";
-
+ 
+  const tblResponsive = document.createElement('div') as HTMLDivElement;
+  tblResponsive.className ='table-responsive';
   const table = document.createElement("table");
   table.className = "displayTable";
 
   const headerRow = document.createElement("tr");
-  ["Name", "Description", "User", "End Date", "Actions"].forEach((header) => {
+  ["Name", "Description", "End Date", "Actions"].forEach((header) => {
       const th = document.createElement("th");
       th.textContent = header;
       headerRow.appendChild(th);
@@ -456,25 +463,24 @@ const renderProjects = async () => {
 
   table.appendChild(headerRow);
 
-  //projects.forEach((project: Project) => {
+  projects.forEach((project: Project) => {
       const row = document.createElement("tr") as HTMLTableRowElement;
 
       row.innerHTML = `
-          <td>{project.name}</td>
-          <td>{project.description}</td>
-          <td>{project.assigned_user}</td>
-          <td>{project.end_date}</td>
+          <td>${project.name}</td>
+          <td>${project.description}</td>
+          <td>${project.end_date}</td>
           <td>
               <div class="actions">
-                  <ion-icon name="create-outline" class="editBtn" data-id="{project.id}"></ion-icon>
-                  <ion-icon name="trash-outline" class="deleteBtn" data-id="{project.id}"></ion-icon>
+                  <ion-icon name="create-outline" class="editBtn" data-id="${project.id}"></ion-icon>
+                  <ion-icon name="trash-outline" class="deleteBtn" data-id="${project.id}"></ion-icon>
               </div>
           </td>
       `;
       table.appendChild(row);
-  //});
-
-  mainBody.appendChild(table);
+  });
+   tblResponsive.appendChild(table);
+  mainBody.appendChild(tblResponsive);
 
   // Add event listeners for edit and delete buttons
   const editButtons = document.querySelectorAll(".editBtn") as NodeListOf<HTMLButtonElement>;
@@ -553,21 +559,29 @@ links.forEach((li) => {
     const target = (event.currentTarget as HTMLElement).dataset.target;
     switch (target) {
       case "dashboard":
-        renderDashboard();
+       
+          renderDashboard();
+       
         break;
       case "projects":
-        renderProjects();
+     
+          renderProjects();
+      
         break;
       case "users":
-        renderUsers();
+       
+          renderUsers();
+        
         break;
       case "logout":
-        logout();
+       
+          logout();
+                 
         break;
       default:
-        setTimeout(() => {
+       
           renderDashboard();
-        }, 1000);
+      
         break;
     }
   };

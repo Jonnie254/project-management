@@ -325,6 +325,9 @@ label {
 .submitbtn:hover {
   background-color: rgb(129, 1, 249);
 }
+.table-responsive {
+  overflow-x: auto;
+}
 .displayTable {
   font-family: arial, sans-serif;
   border-collapse: collapse;

@@ -1,10 +1,10 @@
 
 
-GET http://localhost:5203/projects/all
+GET http://localhost:3002/projects/all
 Content-Type: application/json
 
 ### Create a project
-POST http://localhost:5203/projects/create
+POST http://localhost:3002/projects/create
 Content-Type: application/json
 
 
