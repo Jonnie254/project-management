@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Management</title>
-    <link rel="stylesheet" href="/frontend/css/user.dashboard.css">
+    <link rel="stylesheet" href="../css/user.dashboard.css">
+    <link rel="stylesheet" href="../css/profile.user.css">
 </head>
 
 <body>
@@ -17,14 +18,15 @@
             </div>
             <br>
             <br>
-            <br>
             <div class="links">
                 <ul>
-                    <li class="active"><ion-icon name="grid-outline" class="link-icon"></ion-icon><a
-                            href="user.dashboard.html">Dashboard</a></li>
-                    <li><ion-icon name="card-outline" class="link-icon"></ion-icon><a href="#">Projects</a></li>
-                    <li><ion-icon name="people-outline" class="link-icon"></ion-icon><a href="#">Profile</a></li>
-                    <li><ion-icon name="log-out-outline" class="link-icon" id="log-out-btn"></ion-icon><a href="#">Log
+                    <li id="dashboard-btn"><ion-icon name="grid-outline" class="link-icon"></ion-icon><a>Dashboard</a>
+                    </li>
+                    <li id="project-sections-btn"><ion-icon name="card-outline" class="link-icon"></ion-icon><a
+                            href="#">Projects</a></li>
+                    <li id="profile-btn"><ion-icon name="people-outline" class="link-icon"></ion-icon><a
+                            href="#">Profile</a></li>
+                    <li id="log-out-btn"><ion-icon name="log-out-outline" class="link-icon"></ion-icon><a href="#">Log
                             Out</a></li>
                 </ul>
             </div>
@@ -44,7 +46,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="main-body">
                 <div class="cards">
                     <div class="card">
@@ -59,9 +60,76 @@
                     </div>
                 </div>
             </div>
+            <section id="profile-section">
+                <div class="container">
+                    <div class="tabs">
+                        <p class="tab act" id="settings-tab">Settings</p>
+                        <p class="tab" id="change-password-tab">Change password</p>
+                    </div>
+                    <hr id="line">
+
+                    <div class="tab-content" id="settings-content">
+                        <form id="settings-form">
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input type="text" id="full-name">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email">
+                            </div>
+                            <button type="submit" class="btn">Save</button>
+                        </form>
+                    </div>
+                    <div class="tab-content" id="change-password-content" style="display:none;">
+                        <form id="change-password-form">
+                            <div class="form-group">
+                                <label for="current-password">Current password</label>
+                                <input type="password" id="current-password" name="current-password">
+                            </div>
+                            <div class="form-group">
+                                <label for="new-password">New password</label>
+                                <input type="password" id="new-password" name="new-password">
+                            </div>
+                            <div class="form-group">
+                                <label for="confirm-password">Confirm password</label>
+                                <input type="password" id="confirm-password" name="confirm-password">
+                            </div>
+                            <button type="submit" class="btn">Save</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+            <section id="project-section" style="display:none">
+                <!--create a table-->
+                <div class="assignedTable">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Project Name</th>
+                                <th>Project Description</th>
+                                <th>Project Status</th>
+                                <th>Project Deadline</th>
+                                <th>Project Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Project 1</td>
+                                <td>Project 1 description</td>
+                                <td>Project 1 status</td>
+                                <td>Project 1 deadline</td>
+                                <td>
+                                    <button class="btn" id="edit-btn">Edit</button>
+                                    <button class="btn" id="delete-btn">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+            </section>
         </div>
     </div>
-    <script src="/frontend/js/user.dashboard.js"></script>
+    <script src="../dist/users/user.dashboard.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>
