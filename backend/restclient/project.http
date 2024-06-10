@@ -1,3 +1,5 @@
+
+
 GET http://localhost:3002/projects/all
 Content-Type: application/json
 
@@ -5,7 +7,9 @@ Content-Type: application/json
 POST http://localhost:3002/projects/create
 Content-Type: application/json
 
+
 {
+<<<<<<< HEAD
     "name":"Melissa Doe",
     "description":"melissa90@gmail.com",
     "end_date":"2024-06-06",
@@ -31,3 +35,12 @@ Content-Type: application/json
 ####delete project
 DELETE http://localhost:3002/projects/914b5c23-a358-4884-8f6d-70e56f6e9974
 Content-Type: application/json
+=======
+
+  "name": "Sample Project",
+  "description": "This is a sample project.",
+  "end_date": "2024-06-30",
+  "user_id": "85108478-b981-4c80-a0e9-621f8804904e"
+  
+}
+>>>>>>> adbbaf2908af5ff9cbc853a6f35ed5ece0462ab8

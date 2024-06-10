@@ -167,6 +167,10 @@ select:focus {
   margin: 30px auto;
   width: 90%;
   overflow-x: auto;
+  display: block;
+}
+.main-body.hide {
+  display: none;
 }
 .cards {
   display: grid;
@@ -180,17 +184,79 @@ select:focus {
   background-color: #fff;
   box-shadow: 0px 0px 14px rgb(236, 233, 233);
 }
+.container {
+  width: 80%;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: none;
+}
+.container h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.container.show {
+  display: block;
+  margin-top: 20px;
+}
+.tabs {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+hr {
+  border: 2px solid #1abc9c;
+  width: 50%;
+  margin: 10px 0;
+  transition: margin-left 0.3s ease;
+}
+.tab {
+  cursor: pointer;
+}
+.tab.active {
+  border-bottom: 2px solid #1abc9c;
+  font-weight: bold;
+}
+
+/* .tab-content.active {
+  display: block;
+} */
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+.form-group input {
+  width: 50%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+.btn {
+  background-color: #1abc9c;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-top: 10px;
+  font-size: 16px;
+}
+.btn:hover {
+  background-color: #16a085;
+}
+
 /* Overlay style */
 .modal-overlay {
-  /* Initially hidden */
   display: none;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-  z-index: 10; /* Ensure it's above other elements */
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 10;
 }
 
 /* Modal style */
@@ -200,27 +266,12 @@ select:focus {
   left: 50%;
   min-width: 400px;
   padding: 20px;
-  transform: translate(-50%, -50%); /* Center the modal */
+  transform: translate(-50%, -50%);
   background: rgb(245, 247, 246);
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  z-index: 10; /* Ensure it's above the overlay */
+  z-index: 10;
   max-width: 90%;
-}
-
-/* Close button style */
-.close {
-  cursor: pointer;
-  float: right;
-  color: slateblue;
-  font-size: 2.5rem;
-}
-.projectForm {
-  width: 100%;
-  min-width: 60vh;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
 }
 
 #nameError,
@@ -242,19 +293,36 @@ label {
   display: flex;
   flex-direction: column;
 }
-.submitbtn {
-  cursor: pointer;
-  border: none;
+#project-section {
+  width: 80%;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 5px;
+  margin-top: 20px;
+}
+#pop-up {
+  visibility: hidden;
+  opacity: 0;
+  position: fixed;
+  top: 10%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #c9d6ff;
+  padding: 20px;
   border-radius: 10px;
-  width: 100%;
-  background-color: blueviolet;
-  color: #fff;
-  padding: 1rem 2rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: visibility 0.3s, opacity 0.3s, transform 0.3s;
 }
-.submitbtn:hover {
-  background-color: rgb(129, 1, 249);
+
+#pop-up.show {
+  visibility: visible;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  z-index: 1000;
 }
-.projectTable {
+/* Table style */
+.assignedProjectTable {
   font-family: arial, sans-serif;
   border-collapse: collapse;
   width: 100%;

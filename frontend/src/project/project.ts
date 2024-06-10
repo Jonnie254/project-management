@@ -2,19 +2,24 @@ interface Project {
   id?: string;
   name: string;
   description: string;
-  endDate: string;
-  assignedUser: string;
+  end_date: string;
+  user_id: string;
+  user_name?: string;
+  user_email?: string;
 }
 
 interface User {
-  id?: number;
-  fullname: string;
+  id: string;
+  name: string;
   email: string;
 }
 
 // Arrays to store projects and users
 let projects: Project[] = [];
 let users: User[] = [];
+let unassignedUsers: User[] = [];
+let assignedUsers: User[] = [];
+let user: User;
 
 // DOM elements
 const backIcon = document.querySelector(".back-icon") as HTMLButtonElement;
@@ -30,21 +35,108 @@ const endDateInput = document.querySelector(
   "#endDateInput"
 ) as HTMLInputElement;
 
-// Create a project
-const addProject = async (newProject: Project) => {
+const fetchDetails = async (): Promise<boolean> => {
   try {
+    const token = localStorage.getItem("token");
+    const response = await fetch("http://localhost:3002/user/details", {
+      method: "GET",
+      headers: {
+        Authorization: `${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    const result = await response.json();
+    if (result.success) {
+      const userName = document.querySelector(
+        ".user-name"
+      ) as HTMLParagraphElement;
+      if (userName) {
+        userName.textContent = result.data.name;
+      }
+      return true;
+    } else {
+      handleFetchError(result.message);
+      return false;
+    }
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    return false;
+  }
+};
+fetchDetails();
+
+const fetchUnassignedUsers = async (): Promise<User[]> => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await fetch("http://localhost:3002/users/unassigned", {
+      method: "GET",
+      headers: {
+        Authorization: `${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    const result = await response.json();
+    if (result.success) {
+      unassignedUsers = result.data;
+      return result.data;
+    } else {
+      handleFetchError(result.message);
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    return [];
+  }
+};
+const fetchUsers = async (): Promise<User[]> => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await fetch("http://localhost:3002/users/all", {
+      method: "GET",
+      headers: {
+        Authorization: `${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    const result = await response.json();
+    if (result.success) {
+      users = result.data;
+      return users;
+    } else {
+      handleFetchError(result.message);
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    return [];
+  }
+};
+const handleFetchError = (message: string): void => {
+  if (message === "Access denied. You do not have sufficient privileges.") {
+    window.location.href = "user.dashboard.html";
+  } else if (message === "Invalid token") {
+    window.location.href = "login.html";
+  } else {
+    console.error("Error fetching users:", message);
+  }
+};
+
+// Create a project
+const addProject = async (newProject: Project): Promise<void> => {
+  try {
+    const token = localStorage.getItem("token");
     const response = await fetch("http://localhost:3002/projects/create", {
       method: "POST",
       headers: {
+        Authorization: `${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(newProject),
     });
-    const result = await response.json();
+
     if (response.ok) {
       const project = await response.json();
       projects.push(project);
-      renderProjects();
     } else {
       throw new Error("Failed to add project");
     }
@@ -53,44 +145,61 @@ const addProject = async (newProject: Project) => {
   }
 };
 
-// Fetch users from the server
-const fetchUsers = async () => {
-  const response = await fetch("http://localhost:3002/users/all");
-  const data = await response.json();
-  return data;
-};
-
 // Fetch projects from the server
-const fetchProjects = async () => {
-  const response = await fetch("http://localhost:3002/projects");
-  const data = await response.json();
-  return data;
+const fetchProjects = async (): Promise<Project[]> => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await fetch("http://localhost:3002/projects/all", {
+      method: "GET",
+      headers: {
+        Authorization: `${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    const result = await response.json();
+    if (!result.success) {
+      return [];
+    }
+    projects = result.data;
+    return projects;
+  } catch (error) {
+    return [];
+  }
 };
 
 // Delete project
-const deleteProject = async (id: string) => {
-  const response = await fetch(`http://localhost:3002/projects/${id}`, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  if (!response.ok) {
-    throw new Error(`Failed to delete a project with id: ${id}`);
+const deleteProject = async (id: string): Promise<void> => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await fetch(
+      `http://localhost:3002/projects/delete/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to delete project with id: ${id}`);
+    }
+
+    projects = projects.filter((project) => project.id !== id);
+  } catch (error) {
+    console.error("Error deleting project:", error);
   }
-  // Remove project from the array and re-render projects
-  projects = projects.filter((project) => project.id !== id);
-  renderProjects();
 };
 
 // Show confirmation modal
-const showDeleteConfirmation = (projectId: string) => {
+const showDeleteConfirmation = (projectId: string): void => {
   modalOverlay.innerHTML = `
     <div class="modal-content">
-    <div class="modalItems">
-      <p>Are you sure you want to delete this project?</p>
-      <button id="confirmDelete">Yes</button>
-      <button id="cancelDelete">No</button>
+      <div class="modalItems">
+        <p>Are you sure you want to delete this project?</p>
+        <button id="confirmDelete">Yes</button>
+        <button id="cancelDelete">No</button>
       </div>
     </div>
   `;
@@ -122,53 +231,56 @@ const updateProject = async (
   id: string,
   updatedFields: Partial<Project>
 ): Promise<void> => {
-  const response = await fetch(`http://localhost:3002/projects/${id}`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(updatedFields),
-  });
+  try {
+    const token = localStorage.getItem("token");
+    const response = await fetch(
+      `http://localhost:3002/projects/update/${id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        body: JSON.stringify(updatedFields),
+      }
+    );
 
-  if (!response.ok) {
-    throw new Error(`Failed to update project with id ${id}`);
+    if (!response.ok) {
+      throw new Error(`Failed to update project with id ${id}`);
+    }
+
+    const index = projects.findIndex((project) => project.id === id);
+
+    if (index !== -1) {
+      projects[index] = { ...projects[index], ...updatedFields };
+    }
+  } catch (error) {
+    console.error("Error updating project:", error);
   }
-
-  // Find the index of the project to be updated
-  const index = projects.findIndex((project) => project.id === id);
-
-  // If the project is found, update it
-  if (index !== -1) {
-    projects[index] = { ...projects[index], ...updatedFields };
-  }
-
-  renderProjects(); // Re-render projects after update
 };
 
 // Populate the assign user dropdown with fetched users
-const populateUsersDropdown = async () => {
+const populateUsersDropdown = async (): Promise<void> => {
   try {
-    let assignUserInput = document.querySelector(
+    const assignUserInput = document.querySelector(
       "#assignUser"
     ) as HTMLSelectElement;
-    let users = [{ id: 1, fullname: "John Doe", email: "TEST" }];
-    // users = await fetchUsers();
+    const users = await fetchUnassignedUsers();
 
     assignUserInput.innerHTML = ""; // Clear existing options
-    users.forEach((user) => {
+    users.forEach((user: User) => {
       const option = document.createElement("option");
-      option.value = user.email;
-      option.textContent = user.fullname;
-      if (user.id === 1) {
-        option.selected = true;
-      }
+      option.value = user.id;
+      option.textContent = user.name;
       assignUserInput.appendChild(option);
     });
-  } catch (error) {}
+  } catch (error) {
+    console.error("Error populating users dropdown:", error);
+  }
 };
 
 // Render the project form modal
-const renderProjectFormModal = (project?: Project) => {
+const renderProjectFormModal = (project?: Project): void => {
   modalOverlay.innerHTML = "";
   const modalContent = document.createElement("div");
   modalContent.className = "modal-content";
@@ -221,7 +333,7 @@ const renderProjectFormModal = (project?: Project) => {
   endDateInput.type = "date";
   endDateInput.id = "endDateInput";
   endDateInput.placeholder = "End date here ..";
-  endDateInput.value = project ? project.endDate : "";
+  endDateInput.value = project ? project.end_date : "";
   const endDateError = document.createElement("p");
   endDateError.className = "error";
   endDateError.id = "endDateError";
@@ -266,180 +378,181 @@ const renderProjectFormModal = (project?: Project) => {
   // Append modal content to overlay
   modalOverlay.appendChild(modalContent);
 
-  projectForm.addEventListener("submit", (event: Event) => {
-    event.preventDefault();
-    handleFormSubmission(project?.id);
-    // return;
-    // if (project) {
-    //   handleFormSubmission(project.id);
-    // } else {
-    //   handleFormSubmission();
-    // }
-  });
-
   modalOverlay.style.display = "block";
-  populateUsersDropdown(); // Populate user dropdown when the modal is rendered
-};
 
-// Handle form submission
-const handleFormSubmission = async (id?: string) => {
-  const nameInput = document.querySelector("#nameInput") as HTMLInputElement;
-  const descriptionInput = document.querySelector(
-    "#descriptionInput"
-  ) as HTMLTextAreaElement;
-  const endDateInput = document.querySelector(
-    "#endDateInput"
-  ) as HTMLInputElement;
-  const assignUserSelect = document.querySelector(
-    "#assignUser"
-  ) as HTMLSelectElement;
+  // Populate users dropdown
+  populateUsersDropdown();
 
-  const nameError = document.querySelector(
-    "#nameError"
-  ) as HTMLParagraphElement;
-  const descriptionError = document.querySelector(
-    "#descriptionError"
-  ) as HTMLParagraphElement;
-  const endDateError = document.querySelector(
-    "#endDateError"
-  ) as HTMLParagraphElement;
-  const assignUserError = document.querySelector(
-    "#assignUserError"
-  ) as HTMLParagraphElement;
+  // Handle form submission
+  projectForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
 
-  const successMessage = document.querySelector(
-    "#successMessage"
-  ) as HTMLParagraphElement;
+    const nameValue = nameInput.value.trim();
+    const descriptionValue = descriptionInput.value.trim();
+    const endDateValue = endDateInput.value.trim();
+    const assignedUserValue = assignUserSelect.value;
 
-  let isValid = true;
+    // Validate form data
+    let isValid = true;
 
-  // Reset error messages
-  nameError.textContent = "";
-  descriptionError.textContent = "";
-  endDateError.textContent = "";
-  assignUserError.textContent = "";
-  successMessage.textContent = "";
-
-  // Validate form inputs
-  if (!nameInput.value.trim()) {
-    nameError.textContent = "Name is required";
-    isValid = false;
-  }
-
-  if (!descriptionInput.value.trim()) {
-    descriptionError.textContent = "Description is required";
-    isValid = false;
-  }
-
-  if (!endDateInput.value.trim()) {
-    endDateError.textContent = "End Date is required";
-    isValid = false;
-  }
-
-  if (!assignUserSelect.value.trim()) {
-    assignUserError.textContent = "User assignment is required";
-    isValid = false;
-  }
-
-  // If form is valid, post or update the project data
-  if (isValid) {
-    const projectData: Partial<Project> = {
-      name: nameInput.value,
-      description: descriptionInput.value,
-      endDate: endDateInput.value,
-      assignedUser: assignUserSelect.value,
-    };
-
-    try {
-      let response: any;
-      if (id) {
-        response = await updateProject(id, projectData);
-      } else {
-        response = await addProject(projectData);
-      }
-
-      if (response.success) {
-        successMessage.style.display = "block";
-        successMessage.textContent = "project created successfully";
-
-        // Reset form
-        const form = document.querySelector(".projectForm") as HTMLFormElement;
-        form.reset();
-        renderProjects();
-        populateUsersDropdown(); // Refresh user dropdown to reflect assignment
-      }
-    } catch (error) {
-      console.error("Error handling project:", error);
+    if (!nameValue) {
+      nameError.textContent = "Name is required";
+      isValid = false;
+    } else {
+      nameError.textContent = "";
     }
-  }
+
+    if (!descriptionValue) {
+      descriptionError.textContent = "Description is required";
+      isValid = false;
+    } else {
+      descriptionError.textContent = "";
+    }
+
+    if (!endDateValue) {
+      endDateError.textContent = "End date is required";
+      isValid = false;
+    } else if (new Date(endDateValue) < new Date()) {
+      // Check if end date is before current date
+      endDateError.textContent = "End date cannot be before the current date";
+      isValid = false;
+    } else {
+      endDateError.textContent = "";
+    }
+
+    if (!assignedUserValue) {
+      assignUserError.textContent = "User assignment is required";
+      isValid = false;
+    } else {
+      assignUserError.textContent = "";
+    }
+
+    if (isValid) {
+      const newProject: Project = {
+        name: nameValue,
+        description: descriptionValue,
+        end_date: endDateValue,
+        user_id: assignedUserValue,
+      };
+
+      try {
+        if (project && project.id) {
+          await updateProject(project.id, newProject);
+          successMessage.textContent = "Project updated successfully!";
+        } else {
+          await addProject(newProject);
+          successMessage.textContent = "Project created successfully!";
+        }
+      } catch (error) {
+        console.error("Error creating/updating project:", error);
+      }
+
+      // Clear form fields
+      nameInput.value = "";
+      descriptionInput.value = "";
+      endDateInput.value = "";
+      assignUserSelect.value = "";
+
+      setTimeout(() => {
+        successMessage.textContent = "";
+        modalOverlay.style.display = "none";
+      }, 2000);
+    }
+  });
 };
+
+// Event listener for the create project icon
+createIcon.addEventListener("click", () => {
+  renderProjectFormModal();
+});
 
 // Render the dashboard section
-const renderDashboard = () => {
+const renderDashboard = async () => {
+  await Promise.all([fetchProjects(), fetchUsers(), fetchUnassignedUsers()]);
   mainBody.innerHTML = `
-  
-  <div class="cards">
-    <div class="card">
-      <ion-icon name="card-outline" class="card-icon"></ion-icon>
-      <p>Projects</p>
-      <h2>${projects.length}</h2>
-    </div>
-    <div class="card">
-      <ion-icon name="people-outline" class="card-icon"></ion-icon>
-      <p>Users</p>
-      <h2>${users.length}</h2>
-    </div>
-    <div class="card">
-      <ion-icon name="timer-outline" class="card-icon"></ion-icon>
-      <p>Time Spent</p>
-      <h2>20HRS</h2>
     
-  </div>
-  <div class="analysis">
-  </div>
-  </div>
-  
-  `;
+    <div class="dashboard-wrapper">
+      <div class="card1">
+        <ion-icon name="card-outline" class="card-icon"></ion-icon>
+        <p>Projects</p>
+        <h2>${projects.length}</h2>
+      </div>
+      <div class="card2">
+        <ion-icon name="people-outline" class="card-icon"></ion-icon>
+        <p>Users</p>
+        <h2>${users.length}</h2>
+      </div>
+      <div class="card3">
+        <ion-icon name="timer-outline" class="card-icon"></ion-icon>
+        <p>Time Spent</p>
+        <h2>20HRS</h2>
+      
+    </div>
+   
+     <div class="analytics">
+    
+    </div>
+    </div>
+   
+    
+    
+    
+    `;
 };
 
-// Render the projects section
-const renderProjects = async () => {
-  projects = await fetchProjects();
+const displayProjects = async (
+  table: HTMLTableElement,
+  tblResponsive: HTMLDivElement
+) => {
   mainBody.innerHTML = "";
-  const table = document.createElement("table");
-  table.className = "displayTable";
-
-  const headerRow = document.createElement("tr");
-  ["Name", "Description", "User", "EndDate", "Actions"].forEach((header) => {
-    const th = document.createElement("th");
-    th.textContent = header;
-    headerRow.appendChild(th);
-  });
-
-  table.appendChild(headerRow);
+  while (tblResponsive.firstElementChild) {
+    tblResponsive.removeChild(tblResponsive.firstElementChild);
+  }
+  projects = await fetchProjects();
 
   projects.forEach((project: Project) => {
     const row = document.createElement("tr") as HTMLTableRowElement;
 
     row.innerHTML = `
-  
-    <td>${project.name}</td>
-    <td>${project.description}</td>
-    <td>${project.assignedUser}</td>
-    <td>${project.endDate}</td>
-    <td>
-      <div class="actions">
-        <ion-icon name="create-outline" class="editBtn" data-id="${project.id}"></ion-icon>
-        <ion-icon name="trash-outline" class="deleteBtn" data-id="${project.id}"></ion-icon>
-      </div>
-    </td>
-  
-  `;
-
+        <td>${project.name}</td>
+        <td>${project.description}</td>
+        <td>${project.end_date}</td>
+        <td>${project.user_email}</td>
+        <td>
+            <div class="actions">
+                <ion-icon name="create-outline" class="editBtn" data-id="${project.id}"></ion-icon>
+                <ion-icon name="trash-outline" class="deleteBtn" data-id="${project.id}"></ion-icon>
+            </div>
+        </td>
+    `;
     table.appendChild(row);
   });
+  tblResponsive.appendChild(table);
+  mainBody.appendChild(tblResponsive);
+};
 
-  mainBody.appendChild(table);
+//Render the projects section
+const renderProjects = async () => {
+  mainBody.innerHTML = "";
+
+  const tblResponsive = document.createElement("div") as HTMLDivElement;
+  tblResponsive.className = "table-responsive";
+  const table: HTMLTableElement = document.createElement("table");
+  table.className = "displayTable";
+
+  const headerRow = document.createElement("tr");
+  ["Name", "Description", "End Date", "Assigned User", "Actions"].forEach(
+    (header) => {
+      const th = document.createElement("th");
+      th.textContent = header;
+      headerRow.appendChild(th);
+    }
+  );
+
+  table.appendChild(headerRow);
+  displayProjects(table, tblResponsive);
+  tblResponsive.appendChild(table);
+  mainBody.appendChild(tblResponsive);
 
   // Add event listeners for edit and delete buttons
   const editButtons = document.querySelectorAll(
@@ -465,9 +578,9 @@ const renderProjects = async () => {
       if (id) {
         try {
           showDeleteConfirmation(id);
-          // await deleteProject(id);
-          // Render projects after deletion
-          // renderProjects();
+          await deleteProject(id);
+          // Re-render projects after deletion
+          await renderProjects();
         } catch (error) {
           console.error("Error deleting project:", error);
         }
@@ -475,7 +588,6 @@ const renderProjects = async () => {
     });
   });
 };
-
 // Render the users section
 const renderUsers = async () => {
   users = await fetchUsers();
@@ -496,49 +608,60 @@ const renderUsers = async () => {
   users.forEach((user) => {
     const row = document.createElement("tr") as HTMLTableRowElement;
     row.innerHTML = `
-   
-   <td>${user.fullname}</td>
-    <td>${user.email}</td>
-
-   `;
+     
+     <td>${user.name}</td>
+      <td>${user.email}</td>
+  
+     `;
     table.appendChild(row);
   });
   mainBody.appendChild(table);
 };
 
-// Render the settings section
-const renderSettings = () => {
-  mainBody.innerHTML =
-    "<h1>Settings Section</h1> <p>This is the Settings section.</p>";
+//logout
+const logout = async () => {
+  window.location.href = "/frontend/html/login.html";
 };
 
-// Event listener for the "Create Project" icon
-createIcon.addEventListener("click", () => {
-  renderProjectFormModal();
-});
+/// Event listeners for sidebar links
+const links = document.querySelectorAll(".links ul li");
+links.forEach((li) => {
+  const link = li.querySelector("a");
+  const icon = li.querySelector("ion-icon");
 
-// Event listeners for sidebar links
-const links = document.querySelectorAll(".links a");
-links.forEach((link) => {
-  link.addEventListener("click", (event) => {
+  const clickHandler = (event: Event) => {
     event.preventDefault();
     const target = (event.currentTarget as HTMLElement).dataset.target;
     switch (target) {
       case "dashboard":
         renderDashboard();
+
         break;
       case "projects":
         renderProjects();
+
         break;
       case "users":
         renderUsers();
-        break;
 
+        break;
+      case "logout":
+        logout();
+
+        break;
       default:
         renderDashboard();
+
         break;
     }
-  });
+  };
+
+  if (link) {
+    link.addEventListener("click", clickHandler);
+  }
+  if (icon) {
+    icon.addEventListener("click", clickHandler);
+  }
 });
 
 // Set default content to Dashboard on page load

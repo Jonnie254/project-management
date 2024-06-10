@@ -1,18 +1,21 @@
+
+##register user
 POST http://localhost:3002/auth/register
 Content-Type: application/json
 
 
 {
-    "name":"Melissa Wanja",
-    "email":"melwa@gmail.com",
-    "password":"1223"
+    "name":"cena Doe",
+    "email":"cena112@gmail.com",
+    "password":"123"
 }
 
-#####
+###login user
 POST http://localhost:3002/auth/login
 Content-Type: application/json
 
 {
-    "email":"mel@gmail.com",
+    "email":"john112@gmail.com",
     "password":"123"
 }
+

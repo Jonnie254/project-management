@@ -1,9 +1,11 @@
 import { Request, Response } from "express";
 import { v4 } from "uuid";
-import { Projects } from "../interfaces/projects";
+import { Project } from "../interfaces/project";
 import { projectServices } from "../services/projects.services";
+import { getIDFromToken } from "../middleware/getIDFromToken";
 
 export const createProject = async (req: Request, res: Response) => {
+<<<<<<< HEAD
   const projectManager = new projectServices();
   const now = new Date();
   const project: Projects = {
@@ -15,36 +17,36 @@ export const createProject = async (req: Request, res: Response) => {
     created_at: now,
     updated_at: now,
   };
+=======
+  const now = new Date().toISOString();
+  const project: Project = req.body;
+  project.id = v4();
+  project.created_at = now;
+  project.updated_at = now;
+>>>>>>> adbbaf2908af5ff9cbc853a6f35ed5ece0462ab8
 
-  const newProject = await projectManager.createProject(project);
-  if (newProject.success) {
-    return res.status(200).json({ success: true, message: newProject.message });
-  } else {
-    return res
-      .status(400)
-      .json({ success: false, message: newProject.message });
+  const projects = new projectServices();
+  const response = await projects.createProject(project);
+  if (!response.success) {
+    return res.status(400).json(response);
   }
+  return res.status(201).json(response);
 };
 
 export const updateProject = async (req: Request, res: Response) => {
-  const projectManager = new projectServices();
-  const project_id = req.params.project_id;
-  const project: Projects = req.body;
-  const updatedProject = await projectManager.updateProject(
-    project_id,
-    project
-  );
-  if (updatedProject.success) {
-    return res
-      .status(200)
-      .json({ success: true, message: updatedProject.message });
-  } else {
-    return res
-      .status(400)
-      .json({ success: false, message: updatedProject.message });
+  const id = req.params.id;
+  const project: Project = req.body;
+  project.id = id;
+  project.updated_at = new Date().toISOString();
+  const projects = new projectServices();
+  const response = await projects.updateProject(id, project);
+  if (!response.success) {
+    return res.status(400).json(response);
   }
+  return res.status(200).json(response);
 };
 
+<<<<<<< HEAD
 export const Deleteproject = async (req: Request, res: Response) => {
   const projectManager = new projectServices();
   const project_id = req.params.project_id;
@@ -57,28 +59,33 @@ export const Deleteproject = async (req: Request, res: Response) => {
     return res
       .status(400)
       .json({ success: false, message: deletedProject.message });
+=======
+export const deleteProject = async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const projects = new projectServices();
+  const response = await projects.deleteProject(id);
+  if (!response.success) {
+    return res.status(400).json(response);
+>>>>>>> adbbaf2908af5ff9cbc853a6f35ed5ece0462ab8
   }
+  return res.status(200).json(response);
 };
 
-export const fetchProject = async (req: Request, res: Response) => {
-  const projectManager = new projectServices();
-  const project_id = req.params.project_id;
-  const project = await projectManager.fetchProject(project_id);
-  if (project.success) {
-    return res.status(200).json({ success: true, data: project.data });
-  } else {
-    return res.status(400).json({ success: false, message: project.message });
+export const getProject = async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const projects = new projectServices();
+  const response = await projects.getProject(id);
+  if (!response.success) {
+    return res.status(400).json(response);
   }
+  return res.status(200).json(response);
 };
 
-export const fetchProjects = async (req: Request, res: Response) => {
-  const projectManager = new projectServices();
-  const projects = await projectManager.fetchProjects();
-  if (projects.success) {
-    return res
-      .status(200)
-      .json({ success: true, message: projects.message, data: projects.data });
-  } else {
-    return res.status(400).json({ success: false, message: projects.message });
+export const getProjects = async (req: Request, res: Response) => {
+  const projects = new projectServices();
+  const response = await projects.getProjects();
+  if (!response.success) {
+    return res.status(400).json(response);
   }
+  return res.status(200).json(response);
 };
