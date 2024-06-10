@@ -7,6 +7,7 @@ export const verifyToken = (
   next: NextFunction
 ) => {
   const token = req.cookies.token || req.headers["authorization"];
+  console.log(token);
 
   if (!token) {
     return res
@@ -16,8 +17,8 @@ export const verifyToken = (
   try {
     jwt.verify(token, process.env.JWT_SECRET as string);
     next();
-  } catch (error) {
-    console.log("error", error);
+  } catch (error: any) {
+    console.log(error.message);
 
     res.clearCookie("token");
     return res

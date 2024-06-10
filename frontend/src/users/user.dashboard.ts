@@ -1,3 +1,12 @@
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: "user";
+}
+
+let userDetails: User;
+
 //log out the user
 const logOutButton = document.getElementById(
   "log-out-btn"
@@ -40,7 +49,51 @@ projectSectionBtn.addEventListener("click", () => {
   dashboardButton.classList.remove("active");
   profileButton.classList.remove("active");
   profileSection.classList.add("active");
+  fetchAssignedProject();
 });
+const fetchUserDetails = async (): Promise<boolean> => {
+  try {
+    const token = localStorage.getItem("token");
+    console.log(token);
+
+    const response = await fetch("http://localhost:3002/user/details", {
+      method: "GET",
+      headers: {
+        Authorization: `${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    const result = await response.json();
+    if (!result.success && result.message === "Invalid token") {
+      // window.location.href = "login.html";
+    }
+    userDetails = result.data;
+    console.log(result);
+    return true;
+  } catch (error) {
+    console.error("Error fetching details:", error);
+    return false;
+  }
+};
+fetchUserDetails();
+const fetchAssignedProject = async (): Promise<User[]> => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await fetch("http://localhost:3002/projects/", {
+      method: "GET",
+      headers: {
+        Authorization: `${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await response.json();
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.error("Error fetching projects:", error);
+    return [];
+  }
+};
 
 const settingsTab = document.getElementById("settings-tab") as HTMLDivElement;
 const changePasswordTab = document.getElementById(
@@ -145,7 +198,7 @@ changePasswordForm.addEventListener("submit", async (event) => {
     const response = await fetch("http://localhost:3002/auth/update-password", {
       method: "PUT",
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `${localStorage.getItem("token")}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -189,7 +242,7 @@ settingsForm.addEventListener("submit", async (event) => {
     const response = await fetch("http://localhost:3002/auth/update", {
       method: "PUT",
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `${localStorage.getItem("token")}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
