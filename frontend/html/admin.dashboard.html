@@ -1,84 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Project Management</title>
-    <link rel="stylesheet" href="../css/admin.dashboard.css">
-    <link rel="stylesheet" href="../css/admin.dashboard.css">
-</head>
+    <link rel="stylesheet" href="../css/admin.dashboard.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
 
-<body>
+  <body>
     <div class="main">
-        <div class="sideBar">
-            <div class="sideBar-header">
-                <h1>Promage</h1>
-               
-                <!-- <ion-icon name="chevron-back-circle" class="back-icon"></ion-icon> -->
-            </div>
-            <div class="create-items">
-                <ion-icon name="add-circle" class="icon"></ion-icon>
-                <p>Create Project</p>
-            </div>
-            <div class="links">
-                <ul>
-                    <li>
-                        <ion-icon name="grid-outline" class="link-icon" data-target="dashboard"></ion-icon>
-                        <a href="#" data-target="dashboard">Dashboard</a>
-                    </li>
-                    <li>
-                        <ion-icon name="card-outline" class="link-icon" data-target="projects"></ion-icon>
-                        <a href="#" data-target="projects">Projects</a>
-                    </li>
-                    <li>
-                        <ion-icon name="people-outline" class="link-icon" data-target="users"></ion-icon>
-                        <a href="#" data-target="users">Users</a>
-                    </li>
-                    <li>
-                        <ion-icon name="log-out-outline" class="link-icon" data-target="logout"></ion-icon>
-                        <a href="#" data-target="logout">Logout</a>
-                    </li>
-                </ul>
-                
+      <div class="sideBar">
+        <div class="sideBar-header">
+          <h1>Promage</h1>
 
-            </div>
-
+          <!-- <ion-icon name="chevron-back-circle" class="back-icon"></ion-icon> -->
         </div>
+        <div class="create-items">
+          <ion-icon name="add-circle" class="icon"></ion-icon>
+          <p>Create Project</p>
+        </div>
+        <div class="links">
+          <ul>
+            <li>
+              <ion-icon
+                name="grid-outline"
+                class="link-icon"
+                data-target="dashboard"
+              ></ion-icon>
+              <a href="#" data-target="dashboard">Dashboard</a>
+            </li>
+            <li>
+              <ion-icon
+                name="card-outline"
+                class="link-icon"
+                data-target="projects"
+              ></ion-icon>
+              <a href="#" data-target="projects">Projects</a>
+            </li>
+            <li>
+              <ion-icon
+                name="people-outline"
+                class="link-icon"
+                data-target="users"
+              ></ion-icon>
+              <a href="#" data-target="users">Users</a>
+            </li>
+            <li>
+              <ion-icon
+                name="log-out-outline"
+                class="link-icon"
+                data-target="logout"
+              ></ion-icon>
+              <a href="#" data-target="logout">Logout</a>
+            </li>
+          </ul>
+        </div>
+      </div>
 
-        <div class="main-content">
-
-            <div class="modal-overlay myModal" style="display: none;">
-                <!--Diaplay Modal-->
-            </div>
-            <div class="main-header">
-                <h2>Dashboard</h2>
-                <form class="searchForm">
+      <div class="main-content">
+        <div class="modal-overlay myModal" style="display: none">
+          <!--Diaplay Modal-->
+        </div>
+        <div class="main-header">
+          <h2 style="color: #313131;">Dashboard</h2>
+          <form class="searchForm">
 
                     <input type="text" placeholder="Search for anything" id="searchInput"></input>
 
                 </form>
 
-                <div class="user-profile">
-                    <img src="../assests/profileimage.jpg" alt="User Profile" class="profile-pic">
-                    <div class="dropdown">
-                        <button class="dropdown-btn"><p class="user-name"></p><span>▼</span></button>
-                        <div class="dropdown-content">
-                            <a href="#profile">View Profile</a>
-                            <a href="login.html">Logout</a>
-                        </div>
-                    </div>
-                </div>
-
+          <div class="user-profile">
+            <img
+              src="../assests/profileimage.jpg"
+              alt="User Profile"
+              class="profile-pic"
+            />
+            <div class="dropdown">
+              <button class="dropdown-btn">
+                <p class="user-name"></p>
+                <span>▼</span>
+              </button>
+              <div class="dropdown-content">
+                <a href="#profile">View Profile</a>
+                <a href="login.html">Logout</a>
+              </div>
             </div>
-            <div class="main-body">
-
-            </div>
+          </div>
         </div>
+        <div class="main-body"></div>
+      </div>
     </div>
     <script src="../dist/project/project.js"></script>
-    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-</body>
-
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
+    ></script>
+  </body>
 </html>
