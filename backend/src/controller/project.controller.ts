@@ -3,6 +3,8 @@ import { v4 } from "uuid";
 import { Project } from "../interfaces/project";
 import { projectServices } from "../services/projects.services";
 import { getIDFromToken } from "../middleware/getIDFromToken";
+import { UsersServices } from "../services/users.services";
+import { sendEmail } from "../background-services/mailer";
 
 export const createProject = async (req: Request, res: Response) => {
 <<<<<<< HEAD
@@ -29,6 +31,15 @@ export const createProject = async (req: Request, res: Response) => {
   const response = await projects.createProject(project);
   if (!response.success) {
     return res.status(400).json(response);
+  }
+  const usersService = new UsersServices();
+  const usersResponse = await usersService.getUser(project.user_id);
+  if (usersResponse.success) {
+    const user = usersResponse.data;
+
+    const subject = "You have been assigned a project";
+    const text = `Hello ${user.name}, You have been assigned a project: ${project.name}. Be sure to complete the project before ${project.end_date}. Check your dashboard for more details.`;
+    sendEmail(user.email, subject, text);
   }
   return res.status(201).json(response);
 };

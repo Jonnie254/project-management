@@ -4,7 +4,7 @@ import { Authorization } from "../services/authorization";
 import { v4 } from "uuid";
 import { user_login } from "../interfaces/user_login";
 import { user_details } from "../interfaces/user_details";
-// import { sendEmail } from "../background-services/mailer";
+import { sendEmail } from "../background-services/mailer";
 
 export const register = async (req: Request, res: Response) => {
   let user: User = req.body;
@@ -14,7 +14,10 @@ export const register = async (req: Request, res: Response) => {
   if (!response.success) {
     return res.status(400).json(response);
   }
-  // sendEmail(user.email);
+  const subject = "Welcome to our platform!";
+  const text = `Hello ${user.name} Thank you for signing up on our platform!`;
+
+  sendEmail(user.email, subject, text);
   res.cookie("token", response.data.token, {
     httpOnly: true,
   });
