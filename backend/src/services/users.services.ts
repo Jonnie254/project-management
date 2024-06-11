@@ -78,7 +78,7 @@ export class UsersServices implements UsersService {
       const response = (await Connection.execute("get_assigned", {})).recordset;
       if (response.length < 1) {
         return {
-          success: false,
+          success: true,
           message: "No assigned users found",
           data: null,
         };
@@ -104,7 +104,7 @@ export class UsersServices implements UsersService {
         .recordset;
       if (response.length < 1) {
         return {
-          success: false,
+          success: true,
           message: "No unassigned users found",
           data: null,
         };

@@ -8,15 +8,42 @@ interface User {
   email: string;
   role: "user";
 }
+interface Project {
+  id?: string;
+  name: string;
+  description: string;
+  end_date: string;
+  user_id: string;
+  created_at: string;
+  updated_at: string;
+}
 
 let userDetails: User;
 
+const showPopup = (title: string, message: string) => {
+  const popup = document.getElementById("pop-up") as HTMLDivElement;
+  const popupTitle = document.getElementById(
+    "popup-title"
+  ) as HTMLHeadingElement;
+  const popupMessage = document.getElementById(
+    "popup-message"
+  ) as HTMLParagraphElement;
+
+  popupTitle.textContent = title;
+  popupMessage.textContent = message;
+  popup.classList.add("show");
+
+  // Hide the popup after 3 seconds
+  setTimeout(() => {
+    popup.classList.remove("show");
+  }, 3000);
+};
 //log out the user
 const logOutButton = document.getElementById(
   "log-out-btn"
 ) as HTMLButtonElement;
 logOutButton.addEventListener("click", () => {
-  localStorage.clear();
+  localStorage.removeItem("token");
   window.location.href = "login.html";
 });
 //visit the dashboard
@@ -53,7 +80,6 @@ projectSectionBtn.addEventListener("click", () => {
   manBody.classList.add("hide");
   dashboardButton.classList.remove("active");
   profileButton.classList.remove("active");
-  profileSection.classList.add("active");
   fetchAssignedProject();
 });
 const fetchUserDetails = async (): Promise<boolean> => {
@@ -67,7 +93,10 @@ const fetchUserDetails = async (): Promise<boolean> => {
       },
     });
     const result = await response.json();
-    if (!result.success && result.message === "Invalid token") {
+    if (
+      result.message === "Invalid token" ||
+      result.message === "Access denied"
+    ) {
       window.location.href = "login.html";
     }
     userDetails = result.data;
@@ -81,24 +110,97 @@ const fetchUserDetails = async (): Promise<boolean> => {
   }
 };
 fetchUserDetails();
-const fetchAssignedProject = async (): Promise<User[]> => {
+const fetchAssignedProject = async (): Promise<Project | null> => {
   try {
     const token = localStorage.getItem("token");
-    const response = await fetch("http://localhost:3002/projects/", {
+    const response = await fetch("http://localhost:3002/user/project", {
       method: "GET",
       headers: {
         Authorization: `${token}`,
         "Content-Type": "application/json",
       },
     });
-    const data = await response.json();
-    return data;
+    const result = await response.json();
+    if (
+      result.message === "Invalid token" ||
+      result.message === "Access denied"
+    ) {
+      window.location.href = "login.html";
+    }
+    return result.data[0];
   } catch (error) {
     console.error("Error fetching projects:", error);
-    return [];
+    return null;
+  }
+};
+const updateProjectTable = async (): Promise<void> => {
+  const projectTableBody = document.querySelector("#project-user tbody");
+
+  if (!projectTableBody) {
+    console.error("Project table body not found");
+    return;
+  }
+
+  try {
+    const project: Project | null = await fetchAssignedProject();
+    projectTableBody.innerHTML = "";
+    if (!project) {
+      const p = document.createElement("p");
+      p.textContent = "No project assigned";
+      projectTableBody.appendChild(p);
+      return;
+    }
+    console.log(project);
+
+    // Add rows for each project
+    const row = document.createElement("tr");
+    const nameCell = document.createElement("td");
+    const descriptionCell = document.createElement("td");
+    const deadlineCell = document.createElement("td");
+
+    nameCell.textContent = project.name;
+    descriptionCell.textContent = project.description; // Replace 'description' with the appropriate field
+    deadlineCell.textContent = project.end_date; // Replace 'deadline' with the appropriate field
+
+    row.appendChild(nameCell);
+    row.appendChild(descriptionCell);
+    row.appendChild(deadlineCell);
+
+    projectTableBody.appendChild(row);
+  } catch (error) {
+    console.error("Error updating project table:", error);
   }
 };
 
+// Call the function to update the project table
+updateProjectTable();
+
+const updateProjectCard = async (): Promise<void> => {
+  const projectCountElement = document.getElementById("project-count");
+
+  if (!projectCountElement) {
+    console.error("Project count element not found");
+    return;
+  }
+
+  try {
+    const projects = await fetchAssignedProject();
+
+    if (projects === null) {
+      console.error("Projects array is null");
+      projectCountElement.textContent = "0";
+      return;
+    }
+
+    // const projectCount = projects.length;
+    // projectCountElement.textContent = projectCount.toString();
+  } catch (error) {
+    console.error("Error fetching projects:", error);
+    projectCountElement.textContent = "0";
+  }
+};
+
+updateProjectCard();
 const showProfile = async () => {
   await fetchUserDetails();
   const fullNameInput = document.querySelector(
@@ -226,18 +328,15 @@ changePasswordForm.addEventListener("submit", async (event) => {
       currentPasswordInput.value = "";
       newPasswordInput.value = "";
       confirmPasswordInput.value = "";
-      alert(result.message);
+      showPopup("Success", result.message);
     } else {
-      displayChangePasswordError("change-password-error", true, result.message);
+      showPopup("Error", result.message);
     }
   } catch (error) {
-    displayChangePasswordError(
-      "change-password-error",
-      true,
-      "An error occurred"
-    );
+    showPopup("Error", "An error occurred while changing the password");
   }
 });
+
 //update name and email
 const settingsForm = document.getElementById(
   "settings-form"
@@ -266,11 +365,12 @@ settingsForm.addEventListener("submit", async (event) => {
     });
     const result = await response.json();
     if (result.success) {
-      alert(result.message);
+      showPopup("Success", result.message);
+      fetchUserDetails();
     } else {
-      alert(result.message);
+      showPopup("Error", result.message);
     }
   } catch (error) {
-    alert("An error occurred");
+    showPopup("Error", "An error occurred while updating the settings");
   }
 });
