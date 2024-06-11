@@ -80,7 +80,7 @@ projectSectionBtn.addEventListener("click", () => {
   manBody.classList.add("hide");
   dashboardButton.classList.remove("active");
   profileButton.classList.remove("active");
-  profileSection.classList.add("active");
+
   fetchAssignedProject();
 });
 const fetchUserDetails = async (): Promise<boolean> => {

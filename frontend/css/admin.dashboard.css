@@ -126,7 +126,7 @@ body {
   height: 15vh;
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
 }
 
 .searchForm {
@@ -236,10 +236,6 @@ select:focus {
 }
 
 .analytics {
-  background-image: url(../assests/analysis.png);
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
   grid-area: a;
 }
 /* Overlay style */
@@ -262,7 +258,7 @@ select:focus {
   left: 50%;
   padding: 20px;
   transform: translate(-50%, -50%); /* Center the modal */
-  background: rgb(245, 247, 246);
+  background: #fff;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 10; /* Ensure it's above the overlay */
@@ -278,6 +274,7 @@ select:focus {
   font-size: 2.5rem;
 }
 .projectForm {
+  padding: 10px;
   width: 100%;
   min-width: 60vh;
   display: flex;
@@ -293,9 +290,9 @@ select:focus {
   font-size: 12px;
 }
 #successMessage {
-  padding: 20px;
-  width: 80%;
-  background-color: #97e7e1;
+  padding: 10px;
+  color: #f1f1f1;
+  background-color: #03948a;
   display: none;
 }
 label {
@@ -385,7 +382,7 @@ th {
     display: block;
   }
   .main-body {
-    width: 100%;
+    width: 90%;
   }
 }
 @media screen and (max-width: 500px) {

@@ -120,7 +120,13 @@ const handleFetchError = (message: string): void => {
     console.error("Error fetching users:", message);
   }
 };
-
+//show success message
+const showSuccess = (message: string) => {
+  const msgText = document.createElement("p") as HTMLParagraphElement;
+  msgText.className = "success";
+  modalOverlay.appendChild(msgText);
+  msgText.textContent = message;
+};
 // Create a project
 const addProject = async (newProject: Project): Promise<void> => {
   try {
@@ -134,8 +140,9 @@ const addProject = async (newProject: Project): Promise<void> => {
       body: JSON.stringify(newProject),
     });
 
-    if (response.ok) {
-      const project = await response.json();
+    let result = await response.json();
+    if (result.success) {
+      showSuccess(result.message);
       await fetchProjects();
       renderProjects();
     } else {
@@ -244,11 +251,15 @@ const updateProject = async (id: string, project: Project): Promise<void> => {
         body: JSON.stringify(project),
       }
     );
+    let result = await response.json();
 
-    if (!response.ok) {
+    if (result.success) {
+      showSuccess(result.message);
+      await fetchProjects();
+    } else {
       throw new Error(`Failed to update project with id ${id}`);
     }
-    await fetchProjects();
+
     // const index = projects.findIndex((project) => project.id === id);
 
     // if (index !== -1) {
@@ -439,10 +450,10 @@ const renderProjectFormModal = (project?: Project): void => {
 
       try {
         if (project && project.id) {
-          await updateProject(project.id, newProject);
+          successMessage.style.display = "block";
           successMessage.textContent = "Project updated successfully!";
         } else {
-          await addProject(newProject);
+          successMessage.style.display = "block";
           successMessage.textContent = "Project created successfully!";
         }
       } catch (error) {
@@ -472,7 +483,6 @@ createIcon.addEventListener("click", () => {
 const renderDashboard = async () => {
   await Promise.all([fetchProjects(), fetchUsers(), fetchUnassignedUsers()]);
   mainBody.innerHTML = `
-    
     <div class="dashboard-wrapper">
       <div class="card1">
         <ion-icon name="card-outline" class="card-icon"></ion-icon>
@@ -486,20 +496,14 @@ const renderDashboard = async () => {
       </div>
       <div class="card3">
         <ion-icon name="timer-outline" class="card-icon"></ion-icon>
-        <p>Time Spent</p>
-        <h2>20HRS</h2>
-      
-    </div>
-   
-     <div class="analytics">
-    
-    </div>
-    </div>
-   
-    
-    
-    
-    `;
+        <p>Assigned Users</p>
+        <h2>30</h2>
+      </div>
+      <div class="analytics">
+        <!-- Add canvas element for pie chart -->
+        <canvas id="userPieChart" width="400" height="400"></canvas>
+      </div>
+    </div>`;
 };
 
 const displayProjects = async (
