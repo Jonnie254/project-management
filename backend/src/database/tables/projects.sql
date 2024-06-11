@@ -1,3 +1,12 @@
+<<<<<<< HEAD
+CREATE TABLE projects (id VARCHAR(255)PRIMARY KEY NOT NULL, name VARCHAR(255) NOT NULL, description VARCHAR(255)NOT NULL, end_date DATETIME2 NOT NULL, users_id VARCHAR(255), 
+created_at DATETIME2 DEFAULT GETDATE() NOT NULL, updated_at DATETIME2 DEFAULT GETDATE() NOT NULL)
+
+DROP TABLE projects
+
+ALTER TABLE projects
+ADD CONSTRAINT FK_projects_users FOREIGN KEY (users_id) REFERENCES users(id);
+=======
 CREATE TABLE projects (
     id VARCHAR(255) PRIMARY KEY NOT NULL,
     name VARCHAR(255) NOT NULL,
@@ -10,3 +19,4 @@ CREATE TABLE projects (
 );
 
 
+>>>>>>> adbbaf2908af5ff9cbc853a6f35ed5ece0462ab8

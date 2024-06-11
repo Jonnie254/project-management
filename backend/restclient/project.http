@@ -10,6 +10,33 @@ Authorization: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCeyJhbGciOiJIUzI1NiIsI
 
 
 {
+<<<<<<< HEAD
+    "name":"Melissa Doe",
+    "description":"melissa90@gmail.com",
+    "end_date":"2024-06-06",
+    "users_id":"5efa41e3-09d7-4850-b196-844774b4632c"
+}
+
+####get one project by ID
+GET http://localhost:3002/projects/914b5c23-a358-4884-8f6d-70e56f6e9974
+Content-Type: application/json
+
+####update project by id
+
+PUT http://localhost:3002/projects/99f949a7-04ce-4112-be90-3624b760f751
+
+Content-Type: application/json
+{
+    "name":"Melissa Wanja",
+    "description":"meliswqlnskak",
+    "end_date":"2024-06-06",
+    "users_id":"5efa41e3-09d7-4850-b196-844774b4632c "
+}
+
+####delete project
+DELETE http://localhost:3002/projects/914b5c23-a358-4884-8f6d-70e56f6e9974
+Content-Type: application/json
+=======
 
   "name": "Sample Project",
   "description": "This is a sample project.",
@@ -17,3 +44,4 @@ Authorization: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCeyJhbGciOiJIUzI1NiIsI
   "user_id": "9d1f48c1-5be1-4ba0-b9e6-b7be2091715a"
   
 }
+>>>>>>> adbbaf2908af5ff9cbc853a6f35ed5ece0462ab8
