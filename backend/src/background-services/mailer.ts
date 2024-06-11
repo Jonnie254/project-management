@@ -1,10 +1,10 @@
 import { createTransporter } from "../config/mailConfig";
 
-export const sendEmail = async (email: string) => {
-  console.log("SendEmail...");
-  const subject = "Welcome to our platform!";
-  const text = "Thank you for signing up to our platform!";
-
+export const sendEmail = async (
+  email: string,
+  subject: string,
+  text: string
+) => {
   const transporter = createTransporter();
 
   const mailOptions = {
@@ -15,14 +15,9 @@ export const sendEmail = async (email: string) => {
   };
 
   try {
-    console.log("Sending email...");
-
     await transporter.sendMail(mailOptions);
-    console.log("Email sent!");
-
-    return true;
+    console.log("Email sent");
   } catch (error) {
-    console.error(error);
-    return false;
+    console.log("Error sending email");
   }
 };
