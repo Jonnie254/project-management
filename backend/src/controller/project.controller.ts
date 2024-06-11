@@ -35,6 +35,7 @@ export const updateProject = async (req: Request, res: Response) => {
   const project: Project = req.body;
   project.id = id;
   project.updated_at = new Date().toISOString();
+
   const projects = new projectServices();
   const response = await projects.updateProject(id, project);
   if (!response.success) {

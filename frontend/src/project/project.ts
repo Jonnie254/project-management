@@ -167,8 +167,6 @@ const addProject = async (newProject: Project): Promise<void> => {
     let result = await response.json();
     if (result.success) {
       showSuccess(result.message);
-      await fetchProjects();
-      renderProjects();
     } else {
       throw new Error("Failed to add project");
     }
@@ -464,13 +462,24 @@ const renderProjectFormModal = (project?: Project): void => {
 
     if (isValid) {
       try {
+        const newProject: Project = {
+          name: nameValue,
+          description: descriptionValue,
+          end_date: endDateValue,
+          user_id: assignedUserValue,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        };
         if (project && project.id) {
+          await updateProject(project.id, newProject);
           successMessage.style.display = "block";
           successMessage.textContent = "Project updated successfully!";
         } else {
+          await addProject(newProject);
           successMessage.style.display = "block";
           successMessage.textContent = "Project created successfully!";
         }
+        renderProjects();
       } catch (error) {
         console.error("Error creating/updating project:", error);
       }
@@ -613,32 +622,34 @@ const displayProjects = async (
 const renderProjects = () => {
   mainBody.innerHTML = "";
 
+  const title = document.createElement("h3") as HTMLHeadElement;
+  title.style.color = "blueviolet";
+  title.textContent = "All Projects";
   const tblResponsive = document.createElement("div") as HTMLDivElement;
   tblResponsive.className = "table-responsive";
   const table: HTMLTableElement = document.createElement("table");
   table.className = "displayTable";
 
   const headerRow = document.createElement("tr");
-  ["Name", "Description", "End Date", "Assigned User", "Actions"].forEach(
-    (header) => {
-      const th = document.createElement("th");
-      th.textContent = header;
-      headerRow.appendChild(th);
-    }
-  );
+  ["Name", "Description", "End Date", "Assigned User"].forEach((header) => {
+    const th = document.createElement("th");
+    th.textContent = header;
+    headerRow.appendChild(th);
+  });
 
   table.appendChild(headerRow);
   displayProjects(table, tblResponsive);
   tblResponsive.appendChild(table);
   mainBody.appendChild(tblResponsive);
+  mainBody.appendChild(title);
 };
 // Render the users section
 const renderUsers = async () => {
   users = await fetchUsers();
 
   mainBody.innerHTML = " ";
-  const title = document.createElement("h2") as HTMLHeadElement;
-  title.style.color = "#313131";
+  const title = document.createElement("h3") as HTMLHeadElement;
+  title.style.color = "blueviolet";
   title.textContent = "All Users";
   const table = document.createElement("table") as HTMLTableElement;
   table.className = "displayTable";
