@@ -43,7 +43,7 @@ const logOutButton = document.getElementById(
   "log-out-btn"
 ) as HTMLButtonElement;
 logOutButton.addEventListener("click", () => {
-  localStorage.clear();
+  localStorage.removeItem("token");
   window.location.href = "login.html";
 });
 //visit the dashboard
@@ -93,8 +93,14 @@ const fetchUserDetails = async (): Promise<boolean> => {
       },
     });
     const result = await response.json();
-    if (!result.success && result.message === "Invalid token") {
+    if (
+      result.message === "Invalid token" ||
+      result.message === "Access denied"
+    ) {
       window.location.href = "login.html";
+    }
+    if (!result.success) {
+      return false;
     }
     userDetails = result.data;
     if (profileTextDiv.firstElementChild) {
@@ -118,6 +124,12 @@ const fetchAssignedProject = async (): Promise<Project | null> => {
       },
     });
     const result = await response.json();
+    if (
+      result.message === "Invalid token" ||
+      result.message === "Access denied"
+    ) {
+      window.location.href = "login.html";
+    }
     return result.data[0];
   } catch (error) {
     console.error("Error fetching projects:", error);
@@ -194,6 +206,9 @@ const updateProjectCard = async (): Promise<void> => {
 updateProjectCard();
 const showProfile = async () => {
   await fetchUserDetails();
+  if (!userDetails) {
+    return;
+  }
   const fullNameInput = document.querySelector(
     "#full-name"
   ) as HTMLInputElement;
