@@ -5,9 +5,9 @@ Content-Type: application/json
 
 
 {
-    "name":"cena Doe",
-    "email":"cena112@gmail.com",
-    "password":"123"
+    "name":"test Doe",
+    "email":"test@gmail.com",
+    "password":"12345678"
 }
 
 ###login user
@@ -15,7 +15,7 @@ POST http://localhost:3002/auth/login
 Content-Type: application/json
 
 {
-    "email":"john112@gmail.com",
-    "password":"123"
+    "email":"test@gmail.com",
+    "password":"12345678"
 }
 

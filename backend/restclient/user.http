@@ -2,6 +2,7 @@
 
 GET http://localhost:3002/users/all
 Content-Type: application/json
+Authorization: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImIzOTM1Yzg1LWZmZTAtNDMxZi1iZGI2LWEyNjQ3OWMyNDgyYiIsImlhdCI6MTcxODAxMjU5MywiZXhwIjoxNzE4MDEzNDkzfQ._i6dqbpFMHp8d6TTciUMVzYskC6BmOauLAtrwxXVr1M'
 
 ###getSingle user by id
 GET http://localhost:3002/users/c4e2cc48-73ab-4a60-96fc-63f15cb16020
