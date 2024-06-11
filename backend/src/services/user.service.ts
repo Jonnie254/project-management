@@ -18,7 +18,7 @@ export class UserServices {
         message: "User found",
         data: response[0],
       };
-    } catch (error) {
+    } catch (error: any) {
       return {
         success: false,
         message: "An error occurred",

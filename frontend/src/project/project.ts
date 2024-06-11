@@ -17,6 +17,8 @@ interface User {
 // Arrays to store projects and users
 let projects: Project[] = [];
 let users: User[] = [];
+let unassignedUsers: User[] = [];
+let assignedUsers: User[] = [];
 let user: User;
 
 // DOM elements
@@ -75,6 +77,7 @@ const fetchUnassignedUsers = async (): Promise<User[]> => {
     });
     const result = await response.json();
     if (result.success) {
+      unassignedUsers = result.data;
       return result.data;
     } else {
       handleFetchError(result.message);
@@ -97,7 +100,8 @@ const fetchUsers = async (): Promise<User[]> => {
     });
     const result = await response.json();
     if (result.success) {
-      return result.data;
+      users = result.data;
+      return users;
     } else {
       handleFetchError(result.message);
       return [];
@@ -152,9 +156,12 @@ const fetchProjects = async (): Promise<Project[]> => {
         "Content-Type": "application/json",
       },
     });
-    const projects = await response.json();
-    const result = projects.data;
-    return result;
+    const result = await response.json();
+    if (!result.success) {
+      return [];
+    }
+    projects = result.data;
+    return projects;
   } catch (error) {
     return [];
   }
@@ -426,6 +433,8 @@ const renderProjectFormModal = (project?: Project): void => {
         description: descriptionValue,
         end_date: endDateValue,
         user_id: assignedUserValue,
+        created_at: "",
+        updated_at: "",
       };
 
       try {
@@ -460,7 +469,8 @@ createIcon.addEventListener("click", () => {
 });
 
 // Render the dashboard section
-const renderDashboard = () => {
+const renderDashboard = async () => {
+  await Promise.all([fetchProjects(), fetchUsers(), fetchUnassignedUsers()]);
   mainBody.innerHTML = `
     
     <div class="dashboard-wrapper">
