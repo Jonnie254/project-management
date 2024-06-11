@@ -26,7 +26,7 @@ function validateEmail(email: string): boolean {
 }
 
 function validatePassword(password: string): boolean {
-  return password.trim().length >= 6;
+  return password.length >= 6;
 }
 
 function validateConfirmPassword(
@@ -84,14 +84,14 @@ const openPopUp = (
   }
   if (popUpIcon) {
     popUpIcon.setAttribute("name", iconName);
-    popUpIcon.className = iconClass; // Only set iconClass directly
+    popUpIcon.className = iconClass;
   }
 
   if (popUp) {
     popUp.classList.add("show");
     setTimeout(() => {
       popUp.classList.remove("show");
-    }, 3000); // Hide after 3 seconds
+    }, 3000);
   }
 };
 if (formRegister) {
@@ -214,7 +214,7 @@ if (formLogin) {
 
     // Validate form inputs
     if (!validateEmail(emailLogin)) {
-      displayError("email-login-error", true, "Invalid email format");
+      displayError("email-login-error", true, "The email must contain @ and .");
       return;
     }
 
