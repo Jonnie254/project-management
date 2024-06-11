@@ -111,6 +111,30 @@ const fetchUsers = async (): Promise<User[]> => {
     return [];
   }
 };
+
+const fetchAssignedUsers = async (): Promise<User[]> => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await fetch("http://localhost:3002/users/assigned", {
+      method: "GET",
+      headers: {
+        Authorization: `${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    const result = await response.json();
+    if (result.success) {
+      assignedUsers = result.data;
+      return result.data;
+    } else {
+      handleFetchError(result.message);
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    return [];
+  }
+};
 const handleFetchError = (message: string): void => {
   if (message === "Access denied. You do not have sufficient privileges.") {
     window.location.href = "user.dashboard.html";
@@ -439,15 +463,6 @@ const renderProjectFormModal = (project?: Project): void => {
     }
 
     if (isValid) {
-      const newProject: Project = {
-        name: nameValue,
-        description: descriptionValue,
-        end_date: endDateValue,
-        user_id: assignedUserValue,
-        created_at: "",
-        updated_at: "",
-      };
-
       try {
         if (project && project.id) {
           successMessage.style.display = "block";
@@ -479,29 +494,44 @@ createIcon.addEventListener("click", () => {
   renderProjectFormModal();
 });
 
+const fetchAssignedUsersCount = async () => {
+  return 30;
+};
+const fetchUnassignedUsersCount = async () => {
+  return 20;
+};
 // Render the dashboard section
 const renderDashboard = async () => {
-  await Promise.all([fetchProjects(), fetchUsers(), fetchUnassignedUsers()]);
+  await Promise.all([
+    fetchProjects(),
+    fetchUsers(),
+    fetchUnassignedUsers(),
+    fetchAssignedUsers(),
+  ]);
   mainBody.innerHTML = `
     <div class="dashboard-wrapper">
       <div class="card1">
         <ion-icon name="card-outline" class="card-icon"></ion-icon>
-        <p>Projects</p>
+        <p>Total Projects</p>
         <h2>${projects.length}</h2>
       </div>
       <div class="card2">
         <ion-icon name="people-outline" class="card-icon"></ion-icon>
-        <p>Users</p>
+        <p> All Users</p>
         <h2>${users.length}</h2>
       </div>
       <div class="card3">
-        <ion-icon name="timer-outline" class="card-icon"></ion-icon>
+        <ion-icon name="people-outline" class="card-icon"></ion-icon>
         <p>Assigned Users</p>
-        <h2>30</h2>
+        <h2>${assignedUsers.length}</h2>
+      </div>
+      <div class="card4">
+      <ion-icon name="people-outline" class="card-icon"></ion-icon>
+        <p>Unassigned Users</p>
+        <h2>${unassignedUsers.length}</h2>
       </div>
       <div class="analytics">
         <!-- Add canvas element for pie chart -->
-        <canvas id="userPieChart" width="400" height="400"></canvas>
       </div>
     </div>`;
 };
@@ -607,7 +637,9 @@ const renderUsers = async () => {
   users = await fetchUsers();
 
   mainBody.innerHTML = " ";
-
+  const title = document.createElement("h2") as HTMLHeadElement;
+  title.style.color = "#313131";
+  title.textContent = "All Users";
   const table = document.createElement("table") as HTMLTableElement;
   table.className = "displayTable";
 
@@ -629,6 +661,7 @@ const renderUsers = async () => {
      `;
     table.appendChild(row);
   });
+  mainBody.appendChild(title);
   mainBody.appendChild(table);
 };
 
