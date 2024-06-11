@@ -56,7 +56,7 @@ dashboardButton.addEventListener("click", () => {
   projectSection.style.display = "none";
   dashboardButton.classList.add("active");
 });
-//visit the profile page
+
 const manBody = document.querySelector(".main-body") as HTMLDivElement;
 const profileSection = document.querySelector(".container") as HTMLDivElement;
 const profileButton = document.getElementById("profile-btn") as HTMLDivElement;

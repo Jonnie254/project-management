@@ -74,18 +74,26 @@ const openPopUp = (
     "popup-message"
   ) as HTMLParagraphElement;
   const popUpIcon = document.getElementById("popup-icon") as HTMLElement;
+  const popUp = document.getElementById("pop-up") as HTMLDivElement;
 
-  popUpTitle.textContent = title;
-  popUpMessage.textContent = message;
-  popUpIcon.setAttribute("name", iconName);
-  popUpIcon.className = `tick ${iconClass}`;
+  if (popUpTitle) {
+    popUpTitle.textContent = title;
+  }
+  if (popUpMessage) {
+    popUpMessage.textContent = message;
+  }
+  if (popUpIcon) {
+    popUpIcon.setAttribute("name", iconName);
+    popUpIcon.className = iconClass; // Only set iconClass directly
+  }
 
-  popUp.classList.add("show");
-  setTimeout(() => {
-    popUp.classList.remove("show");
-  }, 3000);
+  if (popUp) {
+    popUp.classList.add("show");
+    setTimeout(() => {
+      popUp.classList.remove("show");
+    }, 3000); // Hide after 3 seconds
+  }
 };
-
 if (formRegister) {
   formRegister.addEventListener("submit", async function (event: Event) {
     event.preventDefault();
@@ -116,7 +124,7 @@ if (formRegister) {
     }
 
     if (!validateEmail(emailRegister)) {
-      displayError("email-error", true, "Invalid email format");
+      displayError("email-error", true, "Invalid format the og the email");
       return;
     }
 
