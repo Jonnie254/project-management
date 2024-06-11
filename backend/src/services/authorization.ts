@@ -22,32 +22,6 @@ export class Authorization implements Auth {
           message: "Invalid email or password",
           data: null,
         };
-<<<<<<< HEAD
-      } else {
-        let hashedpassword = user[0].password;
-
-        let PasswordMatch = bcrypt.compareSync(login.password, hashedpassword);
-
-        if (PasswordMatch) {
-          let { name, password, ...rest } = user[0];
-
-        let token =  jwt.sign(rest, process.env.SECRET_KEY as string, {
-            expiresIn: "2h",
-          });
-          return {
-            success: true,
-            message: "Logged in successfully",
-            data: token,
-          };
-        } else {
-          return {
-            success: false,
-            message: "Incorrect password",
-            data: null,
-          };
-        }
-=======
->>>>>>> adbbaf2908af5ff9cbc853a6f35ed5ece0462ab8
       }
       let hashed_password = user[0].password;
       let passwordsMatch = bcrypt.compareSync(login.password, hashed_password);

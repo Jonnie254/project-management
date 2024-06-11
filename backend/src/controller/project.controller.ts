@@ -7,25 +7,11 @@ import { UsersServices } from "../services/users.services";
 import { sendEmail } from "../background-services/mailer";
 
 export const createProject = async (req: Request, res: Response) => {
-<<<<<<< HEAD
-  const projectManager = new projectServices();
-  const now = new Date();
-  const project: Projects = {
-    id: v4(),
-    name: req.body.name,
-    description: req.body.description,
-    end_date: req.body.end_date,
-    users_id:req.body.users_id,
-    created_at: now,
-    updated_at: now,
-  };
-=======
   const now = new Date().toISOString();
   const project: Project = req.body;
   project.id = v4();
   project.created_at = now;
   project.updated_at = now;
->>>>>>> adbbaf2908af5ff9cbc853a6f35ed5ece0462ab8
 
   const projects = new projectServices();
   const response = await projects.createProject(project);
@@ -57,27 +43,12 @@ export const updateProject = async (req: Request, res: Response) => {
   return res.status(200).json(response);
 };
 
-<<<<<<< HEAD
-export const Deleteproject = async (req: Request, res: Response) => {
-  const projectManager = new projectServices();
-  const project_id = req.params.project_id;
-  const deletedProject = await projectManager.deleteProjects(project_id);
-  if (deletedProject.success) {
-    return res
-      .status(200)
-      .json({ success: true, message: deletedProject.message });
-  } else {
-    return res
-      .status(400)
-      .json({ success: false, message: deletedProject.message });
-=======
 export const deleteProject = async (req: Request, res: Response) => {
   const id = req.params.id;
   const projects = new projectServices();
   const response = await projects.deleteProject(id);
   if (!response.success) {
     return res.status(400).json(response);
->>>>>>> adbbaf2908af5ff9cbc853a6f35ed5ece0462ab8
   }
   return res.status(200).json(response);
 };
