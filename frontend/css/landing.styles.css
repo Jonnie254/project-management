@@ -54,15 +54,23 @@ nav ul li a {
     text-decoration: none;
     font-weight: bold;
 }
-
+nav ul li a:hover{
+    color:black
+}
 nav .login a {
     color: white;
     text-decoration: none;
     font-weight: bold;
+    text-align: center;
+    padding: 10px;
+    border: solid 1px #f7f7f7;
+    margin-left: 100px;
+    border-radius: 5px;
 }
 
-
-
+nav .login a:hover{
+    background-color: black;
+}
 .hero {
     background-image: url('../assests/banner-item-01.jpg');
     background-size: cover;
@@ -76,7 +84,7 @@ nav .login a {
 
 .hero-content {
     max-width: 600px;
-    margin: auto;
+    margin: 20px;
 }
 
 .hero h1 {
@@ -84,11 +92,40 @@ nav .login a {
     margin-bottom: 20px;
     text-align: left;
 }
-
+br{
+    align-items: center;
+}
 .hero p {
     margin-bottom: 20px;
 }
-
+.headings{
+    display: flex;
+    flex-direction: row;
+    gap:20px;
+    width: 100%;
+    height: 100%;
+    margin-left: 5px ;
+}
+.all_container{
+    display: flex;
+    flex-direction: column;
+    margin-right: 10px;
+    width: 50%;
+    height: 100%;
+}
+.all_heading{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    height: 100%;
+}
+.all_container, .all_heading{
+    background-color: #eae8f3;
+}
+ion-icon{
+    width: 30px;
+    height: 50px;
+}
 .quote-btn {
     background-color: #5338AC;
     color: white;
@@ -103,3 +140,52 @@ footer {
     text-align: center;
     padding: 10px;
   }
+  @media screen and (max-width: 768px) {
+    nav {
+        flex-direction: column;
+        align-items: center;
+        min-width: 200px;
+    }
+
+    nav ul {
+        margin-top: 10px;
+        flex-direction: column;
+        min-width: 200px;
+    }
+
+    nav ul li {
+        margin: 10px 0;
+        min-width: 200px;
+    }
+    .hero h1 {
+        font-size: 36px;
+        min-width: 200px;
+    }
+    
+    .hero {
+        padding: 80px 20px;
+        min-width: 200px;
+    }
+    
+    nav .login a {
+        margin-left:0;
+        align-self: center;
+        min-width: 200px;
+    }
+    
+    .headings {
+        flex-direction: column;
+        align-items: center;
+        min-width: 200px;
+    }
+    
+    .all_container, .all_heading {
+        width: 100%;
+        min-width: 200px;
+    }
+    
+    .quote-btn {
+        margin-top: 20px;
+        min-width: 200px;
+    }
+}
