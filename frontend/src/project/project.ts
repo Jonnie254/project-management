@@ -111,6 +111,30 @@ const fetchUsers = async (): Promise<User[]> => {
     return [];
   }
 };
+
+const fetchAssignedUsers = async (): Promise<User[]> => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await fetch("http://localhost:3002/users/assigned", {
+      method: "GET",
+      headers: {
+        Authorization: `${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    const result = await response.json();
+    if (result.success) {
+      assignedUsers = result.data;
+      return result.data;
+    } else {
+      handleFetchError(result.message);
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    return [];
+  }
+};
 const handleFetchError = (message: string): void => {
   if (message === "Access denied. You do not have sufficient privileges.") {
     window.location.href = "user.dashboard.html";
@@ -120,7 +144,13 @@ const handleFetchError = (message: string): void => {
     console.error("Error fetching users:", message);
   }
 };
-
+//show success message
+const showSuccess = (message: string) => {
+  const msgText = document.createElement("p") as HTMLParagraphElement;
+  msgText.className = "success";
+  modalOverlay.appendChild(msgText);
+  msgText.textContent = message;
+};
 // Create a project
 const addProject = async (newProject: Project): Promise<void> => {
   try {
@@ -134,10 +164,9 @@ const addProject = async (newProject: Project): Promise<void> => {
       body: JSON.stringify(newProject),
     });
 
-    if (response.ok) {
-      const project = await response.json();
-      await fetchProjects();
-      renderProjects();
+    let result = await response.json();
+    if (result.success) {
+      showSuccess(result.message);
     } else {
       throw new Error("Failed to add project");
     }
@@ -244,11 +273,15 @@ const updateProject = async (id: string, project: Project): Promise<void> => {
         body: JSON.stringify(project),
       }
     );
+    let result = await response.json();
 
-    if (!response.ok) {
+    if (result.success) {
+      showSuccess(result.message);
+      await fetchProjects();
+    } else {
       throw new Error(`Failed to update project with id ${id}`);
     }
-    await fetchProjects();
+
     // const index = projects.findIndex((project) => project.id === id);
 
     // if (index !== -1) {
@@ -428,23 +461,25 @@ const renderProjectFormModal = (project?: Project): void => {
     }
 
     if (isValid) {
-      const newProject: Project = {
-        name: nameValue,
-        description: descriptionValue,
-        end_date: endDateValue,
-        user_id: assignedUserValue,
-        created_at: "",
-        updated_at: "",
-      };
-
       try {
+        const newProject: Project = {
+          name: nameValue,
+          description: descriptionValue,
+          end_date: endDateValue,
+          user_id: assignedUserValue,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        };
         if (project && project.id) {
           await updateProject(project.id, newProject);
+          successMessage.style.display = "block";
           successMessage.textContent = "Project updated successfully!";
         } else {
           await addProject(newProject);
+          successMessage.style.display = "block";
           successMessage.textContent = "Project created successfully!";
         }
+        renderProjects();
       } catch (error) {
         console.error("Error creating/updating project:", error);
       }
@@ -468,38 +503,46 @@ createIcon.addEventListener("click", () => {
   renderProjectFormModal();
 });
 
+const fetchAssignedUsersCount = async () => {
+  return 30;
+};
+const fetchUnassignedUsersCount = async () => {
+  return 20;
+};
 // Render the dashboard section
 const renderDashboard = async () => {
-  await Promise.all([fetchProjects(), fetchUsers(), fetchUnassignedUsers()]);
+  await Promise.all([
+    fetchProjects(),
+    fetchUsers(),
+    fetchUnassignedUsers(),
+    fetchAssignedUsers(),
+  ]);
   mainBody.innerHTML = `
-    
     <div class="dashboard-wrapper">
       <div class="card1">
         <ion-icon name="card-outline" class="card-icon"></ion-icon>
-        <p>Projects</p>
+        <p>Total Projects</p>
         <h2>${projects.length}</h2>
       </div>
       <div class="card2">
         <ion-icon name="people-outline" class="card-icon"></ion-icon>
-        <p>Users</p>
+        <p> All Users</p>
         <h2>${users.length}</h2>
       </div>
       <div class="card3">
-        <ion-icon name="timer-outline" class="card-icon"></ion-icon>
-        <p>Time Spent</p>
-        <h2>20HRS</h2>
-      
-    </div>
-   
-     <div class="analytics">
-    
-    </div>
-    </div>
-   
-    
-    
-    
-    `;
+        <ion-icon name="people-outline" class="card-icon"></ion-icon>
+        <p>Assigned Users</p>
+        <h2>${assignedUsers.length}</h2>
+      </div>
+      <div class="card4">
+      <ion-icon name="people-outline" class="card-icon"></ion-icon>
+        <p>Unassigned Users</p>
+        <h2>${unassignedUsers.length}</h2>
+      </div>
+      <div class="analytics">
+        <!-- Add canvas element for pie chart -->
+      </div>
+    </div>`;
 };
 
 const displayProjects = async (
@@ -579,31 +622,35 @@ const displayProjects = async (
 const renderProjects = () => {
   mainBody.innerHTML = "";
 
+  const title = document.createElement("h3") as HTMLHeadElement;
+  title.style.color = "blueviolet";
+  title.textContent = "All Projects";
   const tblResponsive = document.createElement("div") as HTMLDivElement;
   tblResponsive.className = "table-responsive";
   const table: HTMLTableElement = document.createElement("table");
   table.className = "displayTable";
 
   const headerRow = document.createElement("tr");
-  ["Name", "Description", "End Date", "Assigned User", "Actions"].forEach(
-    (header) => {
-      const th = document.createElement("th");
-      th.textContent = header;
-      headerRow.appendChild(th);
-    }
-  );
+  ["Name", "Description", "End Date", "Assigned User"].forEach((header) => {
+    const th = document.createElement("th");
+    th.textContent = header;
+    headerRow.appendChild(th);
+  });
 
   table.appendChild(headerRow);
   displayProjects(table, tblResponsive);
   tblResponsive.appendChild(table);
   mainBody.appendChild(tblResponsive);
+  mainBody.appendChild(title);
 };
 // Render the users section
 const renderUsers = async () => {
   users = await fetchUsers();
 
   mainBody.innerHTML = " ";
-
+  const title = document.createElement("h3") as HTMLHeadElement;
+  title.style.color = "blueviolet";
+  title.textContent = "All Users";
   const table = document.createElement("table") as HTMLTableElement;
   table.className = "displayTable";
 
@@ -625,6 +672,7 @@ const renderUsers = async () => {
      `;
     table.appendChild(row);
   });
+  mainBody.appendChild(title);
   mainBody.appendChild(table);
 };
 

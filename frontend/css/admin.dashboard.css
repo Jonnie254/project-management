@@ -209,11 +209,11 @@ select:focus {
   height: 75vh;
   display: grid;
   gap: 20px;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(2, 1fr);
   grid-template-areas:
-    "c1 c2 c3"
-    "a a  a";
+    "c1 c2 c3 c4"
+    "a a a a";
 }
 .card1 {
   grid-area: c1;
@@ -224,13 +224,21 @@ select:focus {
 .card3 {
   grid-area: c3;
 }
+.card4 {
+  grid-area: c4;
+}
 .card1,
 .card2,
-.card3 {
+.card3,
+.card4 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
-
+  justify-content: center;
   border-radius: 10px;
-  padding: 25px;
+  gap: 10px;
+  padding: 10px;
   background-color: #fff;
   box-shadow: 0px 0px 14px rgb(236, 233, 233);
 }
@@ -262,7 +270,7 @@ select:focus {
   left: 50%;
   padding: 20px;
   transform: translate(-50%, -50%); /* Center the modal */
-  background: rgb(245, 247, 246);
+  background: #fff;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 10; /* Ensure it's above the overlay */
@@ -278,6 +286,7 @@ select:focus {
   font-size: 2.5rem;
 }
 .projectForm {
+  padding: 10px;
   width: 100%;
   min-width: 60vh;
   display: flex;
@@ -293,9 +302,9 @@ select:focus {
   font-size: 12px;
 }
 #successMessage {
-  padding: 20px;
-  width: 80%;
-  background-color: #97e7e1;
+  padding: 10px;
+  color: #f1f1f1;
+  background-color: #03948a;
   display: none;
 }
 label {
@@ -385,7 +394,7 @@ th {
     display: block;
   }
   .main-body {
-    width: 100%;
+    width: 90%;
   }
 }
 @media screen and (max-width: 500px) {

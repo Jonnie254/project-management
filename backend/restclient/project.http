@@ -6,7 +6,7 @@ Content-Type: application/json
 ### Create a project
 POST http://localhost:3002/projects/create
 Content-Type: application/json
-Authorization: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImIzOTM1Yzg1LWZmZTAtNDMxZi1iZGI2LWEyNjQ3OWMyNDgyYiIsImlhdCI6MTcxODAxMjU5MywiZXhwIjoxNzE4MDEzNDkzfQ._i6dqbpFMHp8d6TTciUMVzYskC6BmOauLAtrwxXVr1M'
+Authorization: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjdkZGNjNTg2LTZjNjItNGVmMy05YjI0LTZiZDk2YzljZDhjOCIsImlhdCI6MTcxODA4NzQ5NiwiZXhwIjoxNzE4MDg4Mzk2fQ.XWtQVuq2YJ6iYHgzoiB5ZbNkFcwIzZVdTRKmdtyQres'
 
 
 {
@@ -41,7 +41,7 @@ Content-Type: application/json
   "name": "Sample Project",
   "description": "This is a sample project.",
   "end_date": "2024-06-30",
-  "user_id": "9d1f48c1-5be1-4ba0-b9e6-b7be2091715a"
+  "user_id": "f7683dce-0d30-4e36-a494-be2d023f7aaf"
   
 }
 >>>>>>> adbbaf2908af5ff9cbc853a6f35ed5ece0462ab8
